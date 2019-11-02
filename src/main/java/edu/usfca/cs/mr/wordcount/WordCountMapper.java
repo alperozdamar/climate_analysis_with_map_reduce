@@ -17,11 +17,13 @@ extends Mapper<LongWritable, Text, Text, IntWritable> {
     @Override
     protected void map(LongWritable key, Text value, Context context)
         throws IOException, InterruptedException {
+        System.out.println("Value: "+ value);
         // tokenize into words.
         StringTokenizer itr = new StringTokenizer(value.toString());
         // emit word, count pairs.
         while (itr.hasMoreTokens()) {
-            context.write(new Text(itr.nextToken()), new IntWritable(1));
+            String word = itr.nextToken();
+            context.write(new Text(word), new IntWritable(1));
         }
     }
 }
