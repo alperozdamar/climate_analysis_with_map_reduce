@@ -39,7 +39,7 @@ public class ExtremesJob {
             job.setReducerClass(ExtremesReducer.class);
 
             /* Outputs from the Reducer */
-            job.setOutputKeyClass(DoubleWritable.class);
+            job.setOutputKeyClass(TemperatureWritable.class);
             job.setOutputValueClass(LocationTimeWritable.class);
 
             /* Reduce tasks */

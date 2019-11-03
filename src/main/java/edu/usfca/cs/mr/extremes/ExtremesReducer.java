@@ -8,7 +8,7 @@ import org.apache.hadoop.mapreduce.Reducer;
 import java.io.IOException;
 import java.util.ArrayList;
 
-public class ExtremesReducer extends Reducer<TemperatureWritable, LocationTimeWritable, DoubleWritable, LocationTimeWritable> {
+public class ExtremesReducer extends Reducer<TemperatureWritable, LocationTimeWritable, TemperatureWritable, LocationTimeWritable> {
 
     private DoubleWritable minAirTemp = new DoubleWritable(Double.MAX_VALUE);
     private DoubleWritable maxAirTemp = new DoubleWritable(Double.NEGATIVE_INFINITY);
@@ -76,16 +76,16 @@ public class ExtremesReducer extends Reducer<TemperatureWritable, LocationTimeWr
     protected void cleanup(Context context) throws IOException, InterruptedException {
 //        super.cleanup(context);
         for (int i = 0; i < minAirLocations.size(); i++) {
-            context.write(minAirTemp, minAirLocations.get(i));
+            context.write(new TemperatureWritable(minAirTemp, new DoubleWritable(9999.0)), minAirLocations.get(i));
         }
             for (int i = 0; i < maxAirLocations.size(); i++) {
-            context.write(maxAirTemp, maxAirLocations.get(i));
+            context.write(new TemperatureWritable(maxAirTemp, new DoubleWritable(9999.0)), maxAirLocations.get(i));
         }
         for (int i = 0; i < minSurfaceLocations.size(); i++) {
-            context.write(minSurfaceTemp, minSurfaceLocations.get(i));
+            context.write(new TemperatureWritable(new DoubleWritable(9999.0), minSurfaceTemp), minSurfaceLocations.get(i));
         }
         for (int i = 0; i < maxSurfaceLocations.size(); i++) {
-            context.write(maxSurfaceTemp, maxSurfaceLocations.get(i));
+            context.write(new TemperatureWritable(new DoubleWritable(9999.0), maxSurfaceTemp), maxSurfaceLocations.get(i));
         }
     }
 }

@@ -85,7 +85,7 @@ public class LocationTimeWritable implements Writable {
         lon.write(out);
         lat.write(out);
         utcDate.write(out);
-        utcDate.write(out);
+        utcTime.write(out);
     }
 
     @Override
