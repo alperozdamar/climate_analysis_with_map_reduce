@@ -22,18 +22,16 @@ public class ExtremesMapper
     private double threshold     = 2.0;
 
     private boolean validTemp(double temperature) {
-        if (temperature == 9999.0 || temperature == -9999.0) {
+        if (temperature == NcdcConstants.EXTREME_HIGH || temperature == NcdcConstants.EXTREME_LOW) {
             return false;
         }
         return true;
     }
 
-    private boolean checkMinMax(double airTemp, double groundTemp) {
-        //        System.out.println(airTemp + " ::: " + groundTemp);
-        boolean flag = false;
-        return flag;
-    }
-
+    /**
+     * 
+     * value is the one line in the file...
+     */
     @Override
     protected void map(LongWritable key, Text value, Context context)
             throws IOException, InterruptedException {

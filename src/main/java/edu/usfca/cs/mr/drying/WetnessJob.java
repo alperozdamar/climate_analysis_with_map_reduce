@@ -1,4 +1,4 @@
-package edu.usfca.cs.mr.extremes;
+package edu.usfca.cs.mr.drying;
 
 import java.io.File;
 
@@ -8,18 +8,17 @@ import org.apache.hadoop.mapreduce.Job;
 import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 
-import edu.usfca.cs.mr.models.LocationTimeWritable;
-import edu.usfca.cs.mr.models.TemperatureWritable;
+import edu.usfca.cs.mr.drying.models.WetnessWritable;
+import edu.usfca.cs.mr.extremes.ExtremesReducer;
 import edu.usfca.cs.mr.util.Utils;
 
 /**
- * QUESTION-1:
- * Extremes: When and where was the hottest and coldest surface and air temperatures observed 
- * in the dataset? 
- * Are they anomalies? If so, what were the hottest and coldest non-anomalous temperatures?
- *
+ * QUESTION-2:
+ * Drying out: Choose a region in North America (defined by Geohash, which may 
+ * include several weather stations) and determine when its driest month is. This should include 
+ * a histogram with data from each month. 
  */
-public class ExtremesJob {
+public class WetnessJob {
 
     public static void main(String[] args) {
         try {
@@ -29,17 +28,16 @@ public class ExtremesJob {
             Utils.deleteDirectory(new File(args[1]));
 
             /* Job Name. You'll see this in the YARN webapp */
-            Job job = Job.getInstance(conf, "Hiep-Alper-Project2-Extremes Job");
+            Job job = Job.getInstance(conf, "Hiep-Alper-Project2-Wetness Job");
 
             /* Current class */
-            job.setJarByClass(ExtremesJob.class);
+            job.setJarByClass(WetnessJob.class);
 
             /* Mapper class */
-            job.setMapperClass(ExtremesMapper.class);
+            job.setMapperClass(WetnessMapper.class);
 
             /* Outputs from the Mapper. */
-            job.setMapOutputKeyClass(TemperatureWritable.class);
-            job.setMapOutputValueClass(LocationTimeWritable.class);
+            job.setMapOutputKeyClass(WetnessWritable.class);
 
             /* Combiner class. Combiners are run between the Map and Reduce
              * phases to reduce the amount of output that must be transmitted.
@@ -53,8 +51,8 @@ public class ExtremesJob {
             job.setReducerClass(ExtremesReducer.class);
 
             /* Outputs from the Reducer */
-            job.setOutputKeyClass(TemperatureWritable.class);
-            job.setOutputValueClass(LocationTimeWritable.class);
+            job.setOutputKeyClass(WetnessWritable.class);
+            //TODO:job.setOutputValueClass(LocationTimeWritable.class);
 
             /* Reduce tasks */
             job.setNumReduceTasks(1);
