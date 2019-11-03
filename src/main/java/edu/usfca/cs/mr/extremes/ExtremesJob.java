@@ -1,21 +1,28 @@
 package edu.usfca.cs.mr.extremes;
 
-import edu.usfca.cs.mr.models.LocationTimeWritable;
-import edu.usfca.cs.mr.models.TemperatureWritable;
+import java.io.File;
+
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.Path;
-import org.apache.hadoop.io.DoubleWritable;
 import org.apache.hadoop.mapreduce.Job;
 import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 
+import edu.usfca.cs.mr.models.LocationTimeWritable;
+import edu.usfca.cs.mr.models.TemperatureWritable;
+import edu.usfca.cs.mr.util.FileUtils;
+
 public class ExtremesJob {
+
     public static void main(String[] args) {
         try {
             Configuration conf = new Configuration();
 
+            //Delete existing output folder first.
+            FileUtils.deleteDirectory(new File(args[1]));
+
             /* Job Name. You'll see this in the YARN webapp */
-            Job job = Job.getInstance(conf, "word count job");
+            Job job = Job.getInstance(conf, "Hiep-Alper-Project2-Extremes Job");
 
             /* Current class */
             job.setJarByClass(ExtremesJob.class);
@@ -34,7 +41,7 @@ public class ExtremesJob {
              * combiner is disabled here, but the following can be uncommented
              * for this particular job:
             //job.setCombinerClass(WordCountReducer.class);
-
+            
             /* Reducer class */
             job.setReducerClass(ExtremesReducer.class);
 
