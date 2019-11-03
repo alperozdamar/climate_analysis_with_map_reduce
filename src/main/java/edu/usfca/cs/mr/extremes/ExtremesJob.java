@@ -12,6 +12,12 @@ import edu.usfca.cs.mr.models.LocationTimeWritable;
 import edu.usfca.cs.mr.models.TemperatureWritable;
 import edu.usfca.cs.mr.util.FileUtils;
 
+/**
+ * Extremes: When and where was the hottest and coldest surface and air temperatures observed 
+ * in the dataset? 
+ * Are they anomalies? If so, what were the hottest and coldest non-anomalous temperatures?
+ *
+ */
 public class ExtremesJob {
 
     public static void main(String[] args) {
