@@ -1,29 +1,33 @@
-package edu.usfca.cs.mr.drying.models;
+package edu.usfca.cs.mr.models;
 
 import java.io.DataInput;
 import java.io.DataOutput;
 import java.io.IOException;
 
-import org.apache.hadoop.io.DoubleWritable;
+import org.apache.hadoop.io.IntWritable;
 import org.apache.hadoop.io.WritableComparable;
 
 public class WetnessWritable implements WritableComparable<WetnessWritable> {
 
-    private DoubleWritable wetness;
+    private IntWritable wetness;
 
-    public DoubleWritable getAirTemp() {
+    public WetnessWritable() {
+        this.wetness = new IntWritable();
+    }
+
+    public WetnessWritable(int wetness) {
+        this.wetness = new IntWritable(wetness);
+    }
+
+    public IntWritable getWetness() {
         return wetness;
     }
 
-    public WetnessWritable(double wetness) {
-        this.wetness = new DoubleWritable(wetness);
+    public void setWetness(IntWritable wetness) {
+        this.wetness = wetness;
     }
 
-    public void setAirTemp(DoubleWritable airTemp) {
-        this.wetness = airTemp;
-    }
-
-    public WetnessWritable(DoubleWritable airTemp) {
+    public WetnessWritable(IntWritable airTemp) {
         this.wetness = airTemp;
     }
 
@@ -48,4 +52,5 @@ public class WetnessWritable implements WritableComparable<WetnessWritable> {
         int result = this.wetness.compareTo(o.wetness);
         return result;
     }
+
 }

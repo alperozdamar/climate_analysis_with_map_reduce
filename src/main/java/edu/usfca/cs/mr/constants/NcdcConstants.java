@@ -29,7 +29,7 @@ public class NcdcConstants {
     public static final double EXTREME_HIGH        = 9999.0;
     public static final double EXTREME_LOW         = -9999.0;
 
-    public static final double EXTREME_WET         = 9999.0;
-    public static final double EXTREME_DRY         = -9999.0;
+    public static final int    EXTREME_WET         = 9999;
+    public static final int    EXTREME_DRY         = -9999;
 
 }

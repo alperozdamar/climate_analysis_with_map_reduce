@@ -4,12 +4,12 @@ import java.io.File;
 
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.Path;
+import org.apache.hadoop.io.IntWritable;
 import org.apache.hadoop.mapreduce.Job;
 import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 
-import edu.usfca.cs.mr.drying.models.WetnessWritable;
-import edu.usfca.cs.mr.extremes.ExtremesReducer;
+import edu.usfca.cs.mr.models.WetnessWritable;
 import edu.usfca.cs.mr.util.Utils;
 
 /**
@@ -37,7 +37,8 @@ public class WetnessJob {
             job.setMapperClass(WetnessMapper.class);
 
             /* Outputs from the Mapper. */
-            job.setMapOutputKeyClass(WetnessWritable.class);
+            job.setMapOutputKeyClass(IntWritable.class);
+            job.setMapOutputValueClass(WetnessWritable.class);
 
             /* Combiner class. Combiners are run between the Map and Reduce
              * phases to reduce the amount of output that must be transmitted.
@@ -48,11 +49,11 @@ public class WetnessJob {
             //job.setCombinerClass(WordCountReducer.class);
             
             /* Reducer class */
-            job.setReducerClass(ExtremesReducer.class);
+            job.setReducerClass(WetnessReducer.class);
 
             /* Outputs from the Reducer */
-            job.setOutputKeyClass(WetnessWritable.class);
-            //TODO:job.setOutputValueClass(LocationTimeWritable.class);
+            job.setOutputKeyClass(IntWritable.class);
+            job.setOutputValueClass(WetnessWritable.class);
 
             /* Reduce tasks */
             job.setNumReduceTasks(1);

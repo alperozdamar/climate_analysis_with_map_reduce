@@ -23,7 +23,7 @@ public class Utils {
         Date date;
         try {
             date = formatter.parse(dateString);
-            System.out.println(date);
+            //System.out.println(date);
             Calendar cal = Calendar.getInstance();
             cal.setTime(date);
             int month = cal.get(Calendar.MONTH);
