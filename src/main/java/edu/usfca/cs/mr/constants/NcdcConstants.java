@@ -19,7 +19,7 @@ public class NcdcConstants {
     public static final int    ST_FLAG             = 14;
     public static final int    RELATIVE_HUMIDITY   = 15;
     public static final int    RH_FLAG             = 16;
-    public static final int    SOIL_MOISTURE_      = 17;
+    public static final int    SOIL_MOISTURE       = 17;
     public static final int    SOIL_TEMPERATURE_5  = 18;
     public static final int    WETNESS             = 19;
     public static final int    WET_FLAG            = 20;
@@ -31,5 +31,13 @@ public class NcdcConstants {
 
     public static final int    EXTREME_WET         = 9999;
     public static final int    EXTREME_DRY         = -9999;
+
+    public static final String SF_TYPE_RAW         = "R";
+    public static final String SF_TYPE_CORRECT     = "C";
+    public static final String SF_TYPE_UNKNOWN     = "U";
+
+    public static final String QC_FLAG_GOOD        = "0";
+    public static final String QC_FLAG_OVERFLOW    = "1";
+    public static final String QC_FLAG_ERRONEOUS   = "3";
 
 }

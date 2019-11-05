@@ -1,5 +1,7 @@
 package edu.usfca.cs.mr.util;
 
+import edu.usfca.cs.mr.constants.NcdcConstants;
+
 import java.io.File;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -38,6 +40,13 @@ public class Utils {
     public static void main(String[] args) {
         String dateString = "20120625";
         System.out.println(getMonth(dateString));
+    }
+
+    public static boolean isExtreme(double value){
+        if(value == NcdcConstants.EXTREME_HIGH || value == NcdcConstants.EXTREME_LOW){
+            return true;
+        }
+        return false;
     }
 
 }

@@ -209,3 +209,5 @@ buildNumber.properties
 output/*
 2019/*
 Project2Files/
+.idea/*
+mr.iml
