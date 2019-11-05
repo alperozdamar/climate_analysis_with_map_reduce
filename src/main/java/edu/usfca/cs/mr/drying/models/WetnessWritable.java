@@ -1,4 +1,4 @@
-package edu.usfca.cs.mr.models;
+package edu.usfca.cs.mr.drying.models;
 
 import java.io.DataInput;
 import java.io.DataOutput;

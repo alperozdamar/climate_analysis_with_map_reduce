@@ -10,7 +10,7 @@ import org.apache.hadoop.mapreduce.Mapper;
 
 import edu.usfca.cs.mr.constants.Constants;
 import edu.usfca.cs.mr.constants.NcdcConstants;
-import edu.usfca.cs.mr.models.WetnessWritable;
+import edu.usfca.cs.mr.drying.models.WetnessWritable;
 import edu.usfca.cs.mr.util.Geohash;
 import edu.usfca.cs.mr.util.Utils;
 

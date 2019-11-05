@@ -1,4 +1,4 @@
-package edu.usfca.cs.mr.drying;
+package edu.usfca.cs.mr.travel.startup;
 
 import java.io.File;
 
@@ -9,16 +9,23 @@ import org.apache.hadoop.mapreduce.Job;
 import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 
-import edu.usfca.cs.mr.drying.models.WetnessWritable;
+import edu.usfca.cs.mr.travel.startup.models.TravelWritable;
 import edu.usfca.cs.mr.util.Utils;
 
 /**
- * QUESTION-2:
- * Drying out: Choose a region in North America (defined by Geohash, which may 
- * include several weather stations) and determine when its driest month is. This should include 
- * a histogram with data from each month. 
+ * QUESTION-4:
+ * 
+ * Travel Startup: After graduating from USF, you found a startup that aims to 
+ * provide personalized travel itineraries using big data analysis. Given your own 
+ * personal preferences, build a plan for a year of travel across 5 locations. Or, 
+ * in other words: pick 5 regions. What is the best time of year to visit them based 
+ * on the dataset? 
+ * 
+ * Part of your answer should include the comfort index for a region. There are several
+ * different ways of calculating this available online. Note: you don’t need to use 
+ * this for choosing the regions, though.
  */
-public class WetnessJob {
+public class TravelStartupJob {
 
     public static void main(String[] args) {
         try {
@@ -28,17 +35,17 @@ public class WetnessJob {
             Utils.deleteDirectory(new File(args[1]));
 
             /* Job Name. You'll see this in the YARN webapp */
-            Job job = Job.getInstance(conf, "Hiep-Alper-Project2-Wetness Job");
+            Job job = Job.getInstance(conf, "Hiep-Alper-Project2-Travel Agency Job");
 
             /* Current class */
-            job.setJarByClass(WetnessJob.class);
+            job.setJarByClass(TravelStartupJob.class);
 
             /* Mapper class */
-            job.setMapperClass(WetnessMapper.class);
+            job.setMapperClass(TravelMapper.class);
 
             /* Outputs from the Mapper. */
             job.setMapOutputKeyClass(IntWritable.class);
-            job.setMapOutputValueClass(WetnessWritable.class);
+            job.setMapOutputValueClass(TravelWritable.class);
 
             /* Combiner class. Combiners are run between the Map and Reduce
              * phases to reduce the amount of output that must be transmitted.
@@ -49,11 +56,11 @@ public class WetnessJob {
             //job.setCombinerClass(WordCountReducer.class);
             
             /* Reducer class */
-            job.setReducerClass(WetnessReducer.class);
+            job.setReducerClass(TravelReducer.class);
 
             /* Outputs from the Reducer */
             job.setOutputKeyClass(IntWritable.class);
-            job.setOutputValueClass(WetnessWritable.class);
+            job.setOutputValueClass(TravelWritable.class);
 
             /* Reduce tasks */
             job.setNumReduceTasks(1);
