@@ -1,7 +1,6 @@
 package edu.usfca.cs.mr.travel.startup;
 
 import java.io.IOException;
-import java.util.HashMap;
 
 import org.apache.hadoop.io.DoubleWritable;
 import org.apache.hadoop.mapreduce.Reducer;
@@ -56,37 +55,18 @@ public class TravelReducer
         averageComfortIndex = averageComfortIndex / dataCountForMonth;
 
         if (month == 0) {
-            System.out.println("Month 1 average is " + averageComfortIndex);
+            System.out.println("" + regionName + ",January average is " + averageComfortIndex);
         }
-
         if (month == 1) {
-            System.out.println("Month 2 average is " + averageComfortIndex);
+            System.out.println("" + regionName + ",February average is " + averageComfortIndex);
         }
-
         if (month == 2) {
-            System.out.println("Month 3 average is " + averageComfortIndex);
+            System.out.println("" + regionName + ",March average is " + averageComfortIndex);
         }
 
+        averageComfortIndex = Math.round(averageComfortIndex * 100.0) / 100.0;
+
+        context.write(key, new DoubleWritable(averageComfortIndex));
     }
 
-    /**
-       * 12 values (For Each Month)
-       * @return
-       */
-    private HashMap<Integer, Integer> initializeHashMap() {
-        HashMap<Integer, Integer> monthToMinWetness = new HashMap<>();
-        for (int i = 0; i < 12; i++) { //0=January...... 11=December
-            monthToMinWetness.put(i, Integer.MIN_VALUE);//means MAX DRYNESS      // 9999999999....
-        }
-        return monthToMinWetness;
-    }
-
-    @Override
-    protected void cleanup(Context context) throws IOException, InterruptedException {
-        //        super.cleanup(context);
-        //        for (int i = 0; i < 12; i++) { //0=January...... 11=December
-        //            context.write(new IntWritable(i + 1),
-        //                          new WetnessWritable(monthToAverageWetness.get(i)));//means MAX DRYNESS      // 9999999999....
-        //        }
-    }
 }
