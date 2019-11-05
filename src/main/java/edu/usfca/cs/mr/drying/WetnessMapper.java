@@ -11,7 +11,7 @@ import org.apache.hadoop.mapreduce.Mapper;
 import edu.usfca.cs.mr.constants.Constants;
 import edu.usfca.cs.mr.constants.NcdcConstants;
 import edu.usfca.cs.mr.drying.models.WetnessWritable;
-import edu.usfca.cs.mr.util.Geohash;
+import edu.usfca.cs.mr.util.GeoHashHelper;
 import edu.usfca.cs.mr.util.Utils;
 
 /**
@@ -31,25 +31,6 @@ import edu.usfca.cs.mr.util.Utils;
  * 4th: value of output 
  */
 public class WetnessMapper extends Mapper<LongWritable, Text, IntWritable, WetnessWritable> {
-
-    //Santa Barbara: longtitude:-119.88   latitude:34.41 
-    private static boolean isChoosenRegion(String choosenRegion, double longitude,
-                                           double latitude) {
-        /**
-         * TODO:
-         * Use GeoHash Algorithm...
-         */
-        //SANTA-BARBARA... 9q4g
-        String value = Geohash.encode((float) latitude, (float) longitude, 4);
-        //System.out.println("value:" + value);
-
-        if (value.equalsIgnoreCase(choosenRegion)) {
-            //System.out.println("This is Santa Barbara! Heyyoo!!");
-            return true;
-        } else {
-            return false;
-        }
-    }
 
     /**
      * 
@@ -76,9 +57,9 @@ public class WetnessMapper extends Mapper<LongWritable, Text, IntWritable, Wetne
             /**
              * Choose a region in North America (defined by Geohash, which may include several weather stations)
              */
-            if (isChoosenRegion(Constants.GEO_HASH_SANTA_BARBARA,
-                                Double.valueOf(values[NcdcConstants.LONGITUDE]),
-                                Double.valueOf(values[NcdcConstants.LATITUDE]))) {
+            if (GeoHashHelper.isChoosenRegion(Constants.GEO_HASH_SANTA_BARBARA,
+                                              Double.valueOf(values[NcdcConstants.LONGITUDE]),
+                                              Double.valueOf(values[NcdcConstants.LATITUDE]))) {
                 /**
                  * Find the month first from UTC_DATE!
                  */
@@ -109,7 +90,7 @@ public class WetnessMapper extends Mapper<LongWritable, Text, IntWritable, Wetne
         float longtitude = -119.88f;
         float latitude = 34.41f;
 
-        isChoosenRegion(Constants.GEO_HASH_SANTA_BARBARA, longtitude, latitude);
+        GeoHashHelper.isChoosenRegion(Constants.GEO_HASH_SANTA_BARBARA, longtitude, latitude);
     }
 
     private HashMap<Integer, Integer> initializeHashMap() {
