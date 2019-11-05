@@ -1,4 +1,4 @@
-package edu.usfca.cs.mr.drying;
+package edu.usfca.cs.mr.travel.startup;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -10,18 +10,20 @@ import edu.usfca.cs.mr.constants.NcdcConstants;
 import edu.usfca.cs.mr.drying.models.WetnessWritable;
 
 /**
- * Drying out: Choose a region in North America (defined by Geohash, which may include several
- * weather stations) and determine when its driest month is. This should include a 
- * histogram with data from each month. 
- *
- *        20   WETNESS  [5 chars]  cols 119 -- 123 
-          The presence or absence of moisture due to precipitation, in Ohms. 
-          High values (>= 1000) indicate an absence of moisture.  Low values 
-          (< 1000) indicate the presence of moisture.          
-          !!!!!!! HIGH WETNESS MEANS MORE DRYNESS!!!!!!
+ * QUESTION-4:
+ * 
+ * Travel Startup: After graduating from USF, you found a startup that aims to 
+ * provide personalized travel itineraries using big data analysis. Given your own 
+ * personal preferences, build a plan for a year of travel across 5 locations. Or, 
+ * in other words: pick 5 regions. What is the best time of year to visit them based 
+ * on the dataset? 
+ * 
+ * Part of your answer should include the comfort index for a region. There are several
+ * different ways of calculating this available online. Note: you don’t need to use 
+ * this for choosing the regions, though.
  *
  */
-public class WetnessReducer
+public class TravelReducer
         extends Reducer<IntWritable, WetnessWritable, IntWritable, WetnessWritable> {
 
     private HashMap<Integer, Integer> monthToAverageWetness = initializeHashMap();
@@ -34,7 +36,7 @@ public class WetnessReducer
         return true;
     }
 
-    public WetnessReducer() {
+    public TravelReducer() {
     }
 
     /**
@@ -50,7 +52,7 @@ public class WetnessReducer
         //OUR KEY is Month...
         int month = key.get();
         int dataCountForMonth = 0;
-        int averageWetness = 0; //May double it!!! I think no need for now.
+        int averageWetness = 0;
 
         // calculate         
         for (WetnessWritable wetness : values) {

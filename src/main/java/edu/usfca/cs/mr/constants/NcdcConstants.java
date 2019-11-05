@@ -1,7 +1,6 @@
 package edu.usfca.cs.mr.constants;
 
 public class NcdcConstants {
-
     public static final int    WBANNO              = 0;
     public static final int    UTC_DATE            = 1;
     public static final int    UTC_TIME            = 2;
@@ -26,11 +25,14 @@ public class NcdcConstants {
     public static final int    WIND_1_5            = 21;
     public static final int    WIND_FLAG           = 22;
 
-    public static final double EXTREME_HIGH        = 9999.0;
-    public static final double EXTREME_LOW         = -9999.0;
+    public static final double EXTREME_HIGH              = 9999.0;
+    public static final double EXTREME_LOW               = -9999.0;
 
-    public static final int    EXTREME_WET         = 9999;
-    public static final int    EXTREME_DRY         = -9999;
+    public static final int    EXTREME_WET               = 9999;
+    public static final int    EXTREME_DRY               = -9999;
+
+    public static final int    RELATIVE_HUMIDITY_LOWEST  = 0;
+    public static final int    RELATIVE_HUMIDITY_HIGHEST = 100;
 
     public static final String SF_TYPE_RAW         = "R";
     public static final String SF_TYPE_CORRECT     = "C";
