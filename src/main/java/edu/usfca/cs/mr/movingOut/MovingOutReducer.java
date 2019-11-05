@@ -1,10 +1,12 @@
 package edu.usfca.cs.mr.movingOut;
 
+import edu.usfca.cs.mr.constants.NcdcConstants;
+import edu.usfca.cs.mr.movingOut.models.ClimateWritable;
+import edu.usfca.cs.mr.movingOut.models.MonthLocationWritable;
 import edu.usfca.cs.mr.util.Utils;
 import org.apache.hadoop.mapreduce.Reducer;
 
 import java.io.IOException;
-import java.util.Iterator;
 
 public class MovingOutReducer extends Reducer<MonthLocationWritable, ClimateWritable, MonthLocationWritable, ClimateWritable> {
 
@@ -19,7 +21,7 @@ public class MovingOutReducer extends Reducer<MonthLocationWritable, ClimateWrit
         double avgWetness = 0;
         int countAvgWetness = 0;
         for(ClimateWritable value : values){
-            System.out.println(value.toString());
+//            System.out.println(value.toString());
             if(!Utils.isExtreme(value.getAirTemp().get())){
                 avgAirTemp += value.getAirTemp().get();
                 countAirTemp++;
@@ -37,11 +39,10 @@ public class MovingOutReducer extends Reducer<MonthLocationWritable, ClimateWrit
                 countAvgWetness++;
             }
         }
-//        avgAirTemp /= countAirTemp;
-//        avgSurfaceTemp /= countSurfaceTemp;
-//        avgHumidity /= countAvgHumidity;
-//        avgWetness /= countAvgWetness;
-        System.out.println("AVG: "+key.toString() + "\t" + avgAirTemp + "\t" + avgSurfaceTemp + "\t" + avgHumidity + "\t" + avgWetness);
+        avgAirTemp = countAirTemp==0 ? NcdcConstants.EXTREME_HIGH : avgAirTemp / countAirTemp;
+        avgSurfaceTemp = countSurfaceTemp==0 ? NcdcConstants.EXTREME_HIGH : avgSurfaceTemp / countSurfaceTemp;
+        avgHumidity = countAvgHumidity==0 ? NcdcConstants.EXTREME_HIGH : avgHumidity / countAvgHumidity;
+        avgWetness = countAvgWetness==0 ? NcdcConstants.EXTREME_HIGH : avgWetness / countAvgWetness;
         context.write(key, new ClimateWritable(avgAirTemp, avgSurfaceTemp, avgHumidity, avgWetness));
     }
 }

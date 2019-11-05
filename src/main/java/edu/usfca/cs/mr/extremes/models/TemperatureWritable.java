@@ -1,7 +1,6 @@
-package edu.usfca.cs.mr.models;
+package edu.usfca.cs.mr.extremes.models;
 
 import org.apache.hadoop.io.DoubleWritable;
-import org.apache.hadoop.io.Writable;
 import org.apache.hadoop.io.WritableComparable;
 
 import java.io.DataInput;

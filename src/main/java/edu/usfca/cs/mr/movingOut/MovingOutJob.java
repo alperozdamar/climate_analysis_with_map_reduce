@@ -1,10 +1,7 @@
 package edu.usfca.cs.mr.movingOut;
 
-import edu.usfca.cs.mr.extremes.ExtremesJob;
-import edu.usfca.cs.mr.extremes.ExtremesMapper;
-import edu.usfca.cs.mr.extremes.ExtremesReducer;
-import edu.usfca.cs.mr.models.LocationTimeWritable;
-import edu.usfca.cs.mr.models.TemperatureWritable;
+import edu.usfca.cs.mr.movingOut.models.ClimateWritable;
+import edu.usfca.cs.mr.movingOut.models.MonthLocationWritable;
 import edu.usfca.cs.mr.util.Utils;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.Path;

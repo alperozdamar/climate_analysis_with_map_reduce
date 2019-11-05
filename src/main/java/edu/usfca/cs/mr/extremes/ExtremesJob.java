@@ -8,8 +8,8 @@ import org.apache.hadoop.mapreduce.Job;
 import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 
-import edu.usfca.cs.mr.models.LocationTimeWritable;
-import edu.usfca.cs.mr.models.TemperatureWritable;
+import edu.usfca.cs.mr.extremes.models.LocationTimeWritable;
+import edu.usfca.cs.mr.extremes.models.TemperatureWritable;
 import edu.usfca.cs.mr.util.Utils;
 
 /**

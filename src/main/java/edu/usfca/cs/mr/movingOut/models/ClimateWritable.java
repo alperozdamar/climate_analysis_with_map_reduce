@@ -1,4 +1,4 @@
-package edu.usfca.cs.mr.movingOut;
+package edu.usfca.cs.mr.movingOut.models;
 
 import org.apache.hadoop.io.DoubleWritable;
 import org.apache.hadoop.io.Writable;

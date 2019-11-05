@@ -1,6 +1,8 @@
 package edu.usfca.cs.mr.movingOut;
 
 import edu.usfca.cs.mr.constants.NcdcConstants;
+import edu.usfca.cs.mr.movingOut.models.ClimateWritable;
+import edu.usfca.cs.mr.movingOut.models.MonthLocationWritable;
 import edu.usfca.cs.mr.util.Utils;
 import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.io.Text;

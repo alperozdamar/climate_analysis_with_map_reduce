@@ -7,8 +7,8 @@ import org.apache.hadoop.io.DoubleWritable;
 import org.apache.hadoop.mapreduce.Reducer;
 
 import edu.usfca.cs.mr.constants.NcdcConstants;
-import edu.usfca.cs.mr.models.LocationTimeWritable;
-import edu.usfca.cs.mr.models.TemperatureWritable;
+import edu.usfca.cs.mr.extremes.models.LocationTimeWritable;
+import edu.usfca.cs.mr.extremes.models.TemperatureWritable;
 
 public class ExtremesReducer extends
         Reducer<TemperatureWritable, LocationTimeWritable, TemperatureWritable, LocationTimeWritable> {
