@@ -4,7 +4,7 @@ import java.io.File;
 
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.Path;
-import org.apache.hadoop.io.IntWritable;
+import org.apache.hadoop.io.DoubleWritable;
 import org.apache.hadoop.mapreduce.Job;
 import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
@@ -44,8 +44,8 @@ public class TravelStartupJob {
             job.setMapperClass(TravelMapper.class);
 
             /* Outputs from the Mapper. */
-            job.setMapOutputKeyClass(IntWritable.class);
-            job.setMapOutputValueClass(TravelWritable.class);
+            job.setMapOutputKeyClass(TravelWritable.class);
+            job.setMapOutputValueClass(DoubleWritable.class);
 
             /* Combiner class. Combiners are run between the Map and Reduce
              * phases to reduce the amount of output that must be transmitted.
@@ -59,8 +59,8 @@ public class TravelStartupJob {
             job.setReducerClass(TravelReducer.class);
 
             /* Outputs from the Reducer */
-            job.setOutputKeyClass(IntWritable.class);
-            job.setOutputValueClass(TravelWritable.class);
+            job.setOutputKeyClass(TravelWritable.class);
+            job.setOutputValueClass(DoubleWritable.class);
 
             /* Reduce tasks */
             job.setNumReduceTasks(1);

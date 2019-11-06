@@ -10,9 +10,14 @@ public class Constants {
     //FOR QUESTION-4
     public static final String GEO_HASH_YOSEMITE      = "9qdy";
     public static final String GEO_HASH_AUSTIN        = "9v6";
-    public static final String GEO_HASH_MIAMI         = "dhw"; //Covers Miami
-    public static final String GEO_HASH_HAWAII        = "8e3"; //Island of Hawai
-    //-73.74   41.79
+    public static final String GEO_HASH_MIAMI         = "dhw";             //Covers Miami
+    public static final String GEO_HASH_HAWAII        = "8e3";             //Island of Hawai
+
+    public static final String TEXT_AUSTIN            = "TX_Austin";
+    public static final String TEXT_HAWAII            = "HI_HAWAII";
+    public static final String TEXT_MIAMI             = "FL_MIAMI";
+    public static final String TEXT_SANTA_BARBARA     = "CA_SANTA_BARBARA";
+    public static final String TEXT_YOSEMITE          = "CA_YOSEMITE";
 
     public static final int    GEO_HASH_PRECISION     = 4;
 

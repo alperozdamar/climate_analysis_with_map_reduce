@@ -3,6 +3,7 @@ package edu.usfca.cs.mr.travel.startup;
 import java.io.IOException;
 import java.util.HashMap;
 
+import org.apache.hadoop.io.DoubleWritable;
 import org.apache.hadoop.io.IntWritable;
 import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.io.Text;
@@ -10,7 +11,7 @@ import org.apache.hadoop.mapreduce.Mapper;
 
 import edu.usfca.cs.mr.constants.NcdcConstants;
 import edu.usfca.cs.mr.travel.startup.models.TravelWritable;
-import edu.usfca.cs.mr.util.Geohash;
+import edu.usfca.cs.mr.util.GeoHashHelper;
 import edu.usfca.cs.mr.util.Utils;
 
 /**
@@ -31,25 +32,7 @@ import edu.usfca.cs.mr.util.Utils;
  * 3rd : key output
  * 4th: value of output 
  */
-public class TravelMapper extends Mapper<LongWritable, Text, IntWritable, TravelWritable> {
-
-    //Santa Barbara: longtitude:-119.88   latitude:34.41 
-    private static String returnCityName(String choosenRegion, double longitude, double latitude) {
-        /**
-         * TODO:
-         * Use GeoHash Algorithm...
-         */
-        //SANTA-BARBARA... 9q4g
-        String value = Geohash.encode((float) latitude, (float) longitude, 4);
-        //System.out.println("value:" + value);
-
-        if (value.equalsIgnoreCase(choosenRegion)) {
-            //System.out.println("This is Santa Barbara! Heyyoo!!");
-            return "Los Angeles";
-        } else {
-            return "UNKNOWN";
-        }
-    }
+public class TravelMapper extends Mapper<LongWritable, Text, TravelWritable, DoubleWritable> {
 
     /**
      * 
@@ -65,6 +48,7 @@ public class TravelMapper extends Mapper<LongWritable, Text, IntWritable, Travel
         int relativeHumidity = Integer.valueOf(values[NcdcConstants.RELATIVE_HUMIDITY]);
         String dateString = String.valueOf(values[NcdcConstants.UTC_DATE]);
         double comfortIndex = -1;
+        String regionName = "UNKNOWN";
 
         /**
          * Find the month first from UTC_DATE!
@@ -72,23 +56,30 @@ public class TravelMapper extends Mapper<LongWritable, Text, IntWritable, Travel
         int month = Utils.getMonth(dateString);
 
         //Only write value that is denotes corrected and good data.        
-        boolean checkWetness = false;
+        boolean checkComfortIndex = false;
 
         if (checkValidAirTemperature(airTemperature)
                 && checkValidRelativeHumidity(relativeHumidity)) {
-            checkWetness = true;
-            comfortIndex = (airTemperature + relativeHumidity) / 4;
+            checkComfortIndex = true;
+            comfortIndex = (airTemperature + relativeHumidity) / 40;
 
             System.out.println("ComfortIndex:" + comfortIndex);
 
+            regionName = GeoHashHelper
+                    .returnRegionName(Double.valueOf(values[NcdcConstants.LONGITUDE]),
+                                      Double.valueOf(values[NcdcConstants.LATITUDE]));
+
+            System.out.println("RegionName:" + regionName);
+
         }
 
-        if (checkWetness) {
+        if (checkComfortIndex) {
             /**
              * Define Writables...
              */
-            //TravelWritable TravelWritable = new TravelWritable(cityName, comfortIndex);
-            //context.write(new IntWritable(month), TravelWritable);
+            TravelWritable TravelWritable = new TravelWritable(new Text(regionName),
+                                                               new IntWritable(month));
+            context.write(TravelWritable, new DoubleWritable(comfortIndex));
         }
     }
 

@@ -4,67 +4,69 @@ import java.io.DataInput;
 import java.io.DataOutput;
 import java.io.IOException;
 
-import org.apache.hadoop.io.DoubleWritable;
 import org.apache.hadoop.io.IntWritable;
+import org.apache.hadoop.io.Text;
 import org.apache.hadoop.io.WritableComparable;
 
+/**
+ * 
+ * key should be (regionName,month) together  
+ *
+ */
 public class TravelWritable implements WritableComparable<TravelWritable> {
 
-    private DoubleWritable airTemp;
-    private IntWritable    comfortIndex;
+    private Text        regionName; //HAWAII
+    private IntWritable month;      //1.4
 
     public TravelWritable() {
-        this.airTemp = new DoubleWritable();
-        this.comfortIndex = new IntWritable();
+        this.regionName = new Text();
+        this.month = new IntWritable();
     }
 
-    public TravelWritable(double airTemp, int relativeHumidity) {
-        this.airTemp = new DoubleWritable(airTemp);
-        this.comfortIndex = new IntWritable(relativeHumidity);
+    public TravelWritable(Text regionName, IntWritable comfortIndex) {
+        this.regionName = regionName;
+        this.month = comfortIndex;
     }
 
-    public TravelWritable(DoubleWritable airTemp, IntWritable relativeHumidity) {
-        this.airTemp = airTemp;
-        this.comfortIndex = relativeHumidity;
+    public Text getRegionName() {
+        return regionName;
     }
 
-    public DoubleWritable getAirTemp() {
-        return airTemp;
+    public void setRegionName(Text regionName) {
+        this.regionName = regionName;
     }
 
-    public void setAirTemp(DoubleWritable airTemp) {
-        this.airTemp = airTemp;
+    public IntWritable getMonth() {
+        return month;
     }
 
-    public IntWritable getRelativeHumidity() {
-        return comfortIndex;
-    }
-
-    public void setRelativeHumidity(IntWritable relativeHumidity) {
-        this.comfortIndex = relativeHumidity;
+    public void setMonth(IntWritable month) {
+        this.month = month;
     }
 
     @Override
     public void write(DataOutput out) throws IOException {
-        airTemp.write(out);
-        comfortIndex.write(out);
+        regionName.write(out);
+        month.write(out);
     }
 
     @Override
     public void readFields(DataInput in) throws IOException {
-        airTemp.readFields(in);
-        comfortIndex.readFields(in);
+        regionName.readFields(in);
+        month.readFields(in);
     }
 
     @Override
     public String toString() {
-        return airTemp.toString() + "\t" + comfortIndex.toString();
+        return regionName.toString() + "\t" + month.toString();
     }
 
     @Override
     public int compareTo(TravelWritable o) {
-        int result = this.airTemp.compareTo(o.airTemp);
+        int result = this.month.compareTo(o.month);
+        result = result == 0 ? this.regionName.compareTo(o.regionName) : result;
         return result;
+
     }
 
 }
