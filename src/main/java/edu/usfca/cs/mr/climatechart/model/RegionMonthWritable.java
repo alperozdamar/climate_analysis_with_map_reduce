@@ -1,4 +1,4 @@
-package edu.usfca.cs.mr.travel.startup.models;
+package edu.usfca.cs.mr.climatechart.model;
 
 import java.io.DataInput;
 import java.io.DataOutput;
@@ -13,17 +13,17 @@ import org.apache.hadoop.io.WritableComparable;
  * key should be (regionName,month) together  
  *
  */
-public class TravelWritable implements WritableComparable<TravelWritable> {
+public class RegionMonthWritable implements WritableComparable<RegionMonthWritable> {
 
     private Text        regionName; //HAWAII
     private IntWritable month;      //1.4
 
-    public TravelWritable() {
+    public RegionMonthWritable() {
         this.regionName = new Text();
         this.month = new IntWritable();
     }
 
-    public TravelWritable(Text regionName, IntWritable month) {
+    public RegionMonthWritable(Text regionName, IntWritable month) {
         this.regionName = regionName;
         this.month = month;
     }
@@ -62,7 +62,7 @@ public class TravelWritable implements WritableComparable<TravelWritable> {
     }
 
     @Override
-    public int compareTo(TravelWritable o) {
+    public int compareTo(RegionMonthWritable o) {
         int result = this.month.compareTo(o.month);
         result = result == 0 ? this.regionName.compareTo(o.regionName) : result;
         return result;

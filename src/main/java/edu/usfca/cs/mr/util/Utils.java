@@ -1,12 +1,12 @@
 package edu.usfca.cs.mr.util;
 
-import edu.usfca.cs.mr.constants.NcdcConstants;
-
 import java.io.File;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+
+import edu.usfca.cs.mr.constants.NcdcConstants;
 
 public class Utils {
 
@@ -18,6 +18,20 @@ public class Utils {
             }
         }
         file.delete();
+    }
+
+    public static Calendar getCalendar(String dateString) {
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMdd");
+        Date date;
+        try {
+            date = formatter.parse(dateString);
+            Calendar cal = Calendar.getInstance();
+            cal.setTime(date);
+            return cal;
+        } catch (ParseException e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 
     public static int getMonth(String dateString) {
@@ -42,8 +56,8 @@ public class Utils {
         System.out.println(getMonth(dateString));
     }
 
-    public static boolean isExtreme(double value){
-        if(value == NcdcConstants.EXTREME_HIGH || value == NcdcConstants.EXTREME_LOW){
+    public static boolean isExtreme(double value) {
+        if (value == NcdcConstants.EXTREME_HIGH || value == NcdcConstants.EXTREME_LOW) {
             return true;
         }
         return false;
