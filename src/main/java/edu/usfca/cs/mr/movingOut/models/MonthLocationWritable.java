@@ -11,8 +11,7 @@ import java.io.IOException;
 
 public class MonthLocationWritable implements WritableComparable<MonthLocationWritable> {
     private IntWritable month;
-    private DoubleWritable lat;
-    private DoubleWritable lon;
+    private Text geoHash;
 
     public IntWritable getMonth() {
         return month;
@@ -22,45 +21,24 @@ public class MonthLocationWritable implements WritableComparable<MonthLocationWr
         this.month = month;
     }
 
-    public DoubleWritable getLat() {
-        return lat;
-    }
-
-    public void setLat(DoubleWritable lat) {
-        this.lat = lat;
-    }
-
-    public DoubleWritable getLon() {
-        return lon;
-    }
-
-    public void setLon(DoubleWritable lon) {
-        this.lon = lon;
-    }
-
     public MonthLocationWritable(){
         this.month = new IntWritable();
-        this.lat = new DoubleWritable();
-        this.lon = new DoubleWritable();
+        this.geoHash = new Text();
     }
 
-    public MonthLocationWritable(int month, double lat, double lon){
+    public MonthLocationWritable(int month, String geoHash){
         this.month = new IntWritable(month);
-        this.lat = new DoubleWritable(lat);
-        this.lon = new DoubleWritable(lon);
+        this.geoHash = new Text(geoHash);
     }
 
-    public MonthLocationWritable(IntWritable month, DoubleWritable lat, DoubleWritable lon){
+    public MonthLocationWritable(IntWritable month, Text geoHash){
         this.month = month;
-        this.lat = lat;
-        this.lon = lon;
+        this.geoHash = geoHash;
     }
 
     @Override
     public int compareTo(MonthLocationWritable o) {
-        Text location = new Text(this.lat.toString() + this.lon.toString());
-        Text oLocation = new Text(o.lat.toString() + o.lon.toString());
-        int result = location.compareTo(oLocation);
+        int result = this.geoHash.compareTo(o.geoHash);
         if(result == 0){
             return this.month.compareTo(o.month);
         } else {
@@ -70,20 +48,18 @@ public class MonthLocationWritable implements WritableComparable<MonthLocationWr
 
     @Override
     public void write(DataOutput out) throws IOException {
-        lon.write(out);
-        lat.write(out);
         month.write(out);
+        geoHash.write(out);
     }
 
     @Override
     public void readFields(DataInput in) throws IOException {
-        lon.readFields(in);
-        lat.readFields(in);
         month.readFields(in);
+        geoHash.readFields(in);
     }
 
     @Override
     public String toString() {
-        return lon.toString() + "\t" + lat.toString() + "\t" + month.toString();
+        return geoHash.toString() + "\t" + month.toString();
     }
 }

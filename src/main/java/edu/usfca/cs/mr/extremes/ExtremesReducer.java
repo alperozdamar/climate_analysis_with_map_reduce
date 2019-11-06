@@ -23,8 +23,8 @@ public class ExtremesReducer extends
     private ArrayList<LocationTimeWritable> maxSurfaceLocations = new ArrayList<>();
 
     private boolean checkValidTemp(DoubleWritable temperature) {
-        if (temperature.get() == NcdcConstants.EXTREME_HIGH
-                || temperature.get() == NcdcConstants.EXTREME_LOW) {
+        if (temperature.get() == NcdcConstants.EXTREME_TEMP_HIGH
+                || temperature.get() == NcdcConstants.EXTREME_TEMP_LOW) {
             return false;
         }
         return true;
@@ -79,21 +79,21 @@ public class ExtremesReducer extends
         //        super.cleanup(context);
         for (int i = 0; i < minAirLocations.size(); i++) {
             context.write(new TemperatureWritable(minAirTemp,
-                                                  new DoubleWritable(NcdcConstants.EXTREME_HIGH)),
+                                                  new DoubleWritable(NcdcConstants.EXTREME_TEMP_HIGH)),
                           minAirLocations.get(i));
         }
         for (int i = 0; i < maxAirLocations.size(); i++) {
             context.write(new TemperatureWritable(maxAirTemp,
-                                                  new DoubleWritable(NcdcConstants.EXTREME_HIGH)),
+                                                  new DoubleWritable(NcdcConstants.EXTREME_TEMP_HIGH)),
                           maxAirLocations.get(i));
         }
         for (int i = 0; i < minSurfaceLocations.size(); i++) {
-            context.write(new TemperatureWritable(new DoubleWritable(NcdcConstants.EXTREME_HIGH),
+            context.write(new TemperatureWritable(new DoubleWritable(NcdcConstants.EXTREME_TEMP_HIGH),
                                                   minSurfaceTemp),
                           minSurfaceLocations.get(i));
         }
         for (int i = 0; i < maxSurfaceLocations.size(); i++) {
-            context.write(new TemperatureWritable(new DoubleWritable(NcdcConstants.EXTREME_HIGH),
+            context.write(new TemperatureWritable(new DoubleWritable(NcdcConstants.EXTREME_TEMP_HIGH),
                                                   maxSurfaceTemp),
                           maxSurfaceLocations.get(i));
         }

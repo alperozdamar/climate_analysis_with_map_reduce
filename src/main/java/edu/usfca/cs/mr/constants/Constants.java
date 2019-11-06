@@ -19,6 +19,8 @@ public class Constants {
     public static final String TEXT_SANTA_BARBARA     = "CA_SANTA_BARBARA";
     public static final String TEXT_YOSEMITE          = "CA_YOSEMITE";
 
+    public static final int    GEO_HASH_PRECISION     = 4;
+
     public static void main(String[] args) {
 
         //CA_Yosemite_Village

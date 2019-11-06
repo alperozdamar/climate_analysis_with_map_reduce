@@ -84,8 +84,8 @@ public class TravelMapper extends Mapper<LongWritable, Text, TravelWritable, Dou
     }
 
     private boolean checkValidAirTemperature(double airTemperature) {
-        if (airTemperature == NcdcConstants.EXTREME_HIGH
-                || airTemperature == NcdcConstants.EXTREME_LOW) {
+        if (airTemperature == NcdcConstants.EXTREME_TEMP_HIGH
+                || airTemperature == NcdcConstants.EXTREME_TEMP_LOW) {
             return false;
         }
         return true;

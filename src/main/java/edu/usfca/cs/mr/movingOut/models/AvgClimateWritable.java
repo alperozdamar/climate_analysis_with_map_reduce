@@ -1,18 +1,18 @@
 package edu.usfca.cs.mr.movingOut.models;
 
 import org.apache.hadoop.io.DoubleWritable;
-import org.apache.hadoop.io.IntWritable;
+import org.apache.hadoop.io.DoubleWritable;
 import org.apache.hadoop.io.Writable;
 
 import java.io.DataInput;
 import java.io.DataOutput;
 import java.io.IOException;
 
-public class ClimateWritable implements Writable {
+public class AvgClimateWritable implements Writable {
     private DoubleWritable airTemp;
     private DoubleWritable surfaceTemp;
-    private IntWritable humidity;
-    private IntWritable wetness;
+    private DoubleWritable humidity;
+    private DoubleWritable wetness;
 
     public DoubleWritable getAirTemp() {
         return airTemp;
@@ -30,37 +30,37 @@ public class ClimateWritable implements Writable {
         this.surfaceTemp = surfaceTemp;
     }
 
-    public IntWritable getHumidity() {
+    public DoubleWritable getHumidity() {
         return humidity;
     }
 
-    public void setHumidity(IntWritable humidity) {
+    public void setHumidity(DoubleWritable humidity) {
         this.humidity = humidity;
     }
 
-    public IntWritable getWetness() {
+    public DoubleWritable getWetness() {
         return wetness;
     }
 
-    public void setWetness(IntWritable wetness) {
+    public void setWetness(DoubleWritable wetness) {
         this.wetness = wetness;
     }
 
-    public ClimateWritable(){
+    public AvgClimateWritable(){
         this.airTemp = new DoubleWritable();
         this.surfaceTemp = new DoubleWritable();
-        this.humidity = new IntWritable();
-        this.wetness = new IntWritable();
+        this.humidity = new DoubleWritable();
+        this.wetness = new DoubleWritable();
     }
 
-    public ClimateWritable(double airTemp, double surfaceTemp, int humidity, int wetness){
+    public AvgClimateWritable(double airTemp, double surfaceTemp, double humidity, double wetness){
         this.airTemp = new DoubleWritable(airTemp);
         this.surfaceTemp = new DoubleWritable(surfaceTemp);
-        this.humidity = new IntWritable(humidity);
-        this.wetness = new IntWritable(wetness);
+        this.humidity = new DoubleWritable(humidity);
+        this.wetness = new DoubleWritable(wetness);
     }
 
-    public ClimateWritable(DoubleWritable airTemp, DoubleWritable surfaceTemp, IntWritable humidity, IntWritable wetness){
+    public AvgClimateWritable(DoubleWritable airTemp, DoubleWritable surfaceTemp, DoubleWritable humidity, DoubleWritable wetness){
         this.airTemp = airTemp;
         this.surfaceTemp = surfaceTemp;
         this.humidity = humidity;

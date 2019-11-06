@@ -1,6 +1,7 @@
 package edu.usfca.cs.mr.movingOut;
 
 import edu.usfca.cs.mr.constants.NcdcConstants;
+import edu.usfca.cs.mr.movingOut.models.AvgClimateWritable;
 import edu.usfca.cs.mr.movingOut.models.ClimateWritable;
 import edu.usfca.cs.mr.movingOut.models.MonthLocationWritable;
 import edu.usfca.cs.mr.util.Utils;
@@ -8,7 +9,7 @@ import org.apache.hadoop.mapreduce.Reducer;
 
 import java.io.IOException;
 
-public class MovingOutReducer extends Reducer<MonthLocationWritable, ClimateWritable, MonthLocationWritable, ClimateWritable> {
+public class MovingOutReducer extends Reducer<MonthLocationWritable, ClimateWritable, MonthLocationWritable, AvgClimateWritable> {
 
     @Override
     protected void reduce(MonthLocationWritable key, Iterable<ClimateWritable> values, Context context) throws IOException, InterruptedException {
@@ -21,28 +22,27 @@ public class MovingOutReducer extends Reducer<MonthLocationWritable, ClimateWrit
         double avgWetness = 0;
         int countAvgWetness = 0;
         for(ClimateWritable value : values){
-//            System.out.println(value.toString());
-            if(!Utils.isExtreme(value.getAirTemp().get())){
-                avgAirTemp += value.getAirTemp().get();
+            if(Utils.isValidTemp(value.getAirTemp().get())){
                 countAirTemp++;
+                avgAirTemp += (value.getAirTemp().get() - avgAirTemp) / countAirTemp;
             }
-            if(!Utils.isExtreme(value.getSurfaceTemp().get())){
-                avgSurfaceTemp += value.getSurfaceTemp().get();
+            if(Utils.isValidTemp(value.getSurfaceTemp().get())){
                 countSurfaceTemp++;
+                avgSurfaceTemp += (value.getSurfaceTemp().get() - avgSurfaceTemp) / countSurfaceTemp;
             }
-            if(!Utils.isExtreme(value.getHumidity().get())){
-                avgHumidity += value.getHumidity().get();
+            if(Utils.isValidHumid(value.getHumidity().get())){
                 countAvgHumidity++;
+                avgHumidity += (value.getHumidity().get() - avgHumidity) / countAvgHumidity;
             }
-            if(!Utils.isExtreme(value.getWetness().get())){
-                avgWetness += value.getWetness().get();
+            if(Utils.isValidWetness(value.getWetness().get())){
                 countAvgWetness++;
+                avgWetness += (value.getWetness().get() - avgWetness) / countAvgWetness;
             }
         }
-        avgAirTemp = countAirTemp==0 ? NcdcConstants.EXTREME_HIGH : avgAirTemp / countAirTemp;
-        avgSurfaceTemp = countSurfaceTemp==0 ? NcdcConstants.EXTREME_HIGH : avgSurfaceTemp / countSurfaceTemp;
-        avgHumidity = countAvgHumidity==0 ? NcdcConstants.EXTREME_HIGH : avgHumidity / countAvgHumidity;
-        avgWetness = countAvgWetness==0 ? NcdcConstants.EXTREME_HIGH : avgWetness / countAvgWetness;
-        context.write(key, new ClimateWritable(avgAirTemp, avgSurfaceTemp, avgHumidity, avgWetness));
+        avgAirTemp = countAirTemp==0 ? NcdcConstants.EXTREME_TEMP_LOW : Math.round(avgAirTemp * 100.0) / 100.0;
+        avgSurfaceTemp = countSurfaceTemp==0 ? NcdcConstants.EXTREME_TEMP_LOW : Math.round(avgSurfaceTemp * 100.0) / 100.0;
+        avgHumidity = countAvgHumidity==0 ? NcdcConstants.EXTREME_HUMIDITY_LOW : Math.round(avgHumidity * 100.0) / 100.0;
+        avgWetness = countAvgWetness==0 ? NcdcConstants.EXTREME_DRY : Math.round(avgWetness * 100.0) / 100.0;
+        context.write(key, new AvgClimateWritable(avgAirTemp, avgSurfaceTemp, avgHumidity, avgWetness));
     }
 }
