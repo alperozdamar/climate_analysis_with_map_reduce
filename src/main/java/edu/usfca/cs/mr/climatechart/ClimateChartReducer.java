@@ -7,6 +7,7 @@ import org.apache.hadoop.mapreduce.Reducer;
 
 import edu.usfca.cs.mr.climatechart.model.ClimateChartWritable;
 import edu.usfca.cs.mr.climatechart.model.RegionMonthWritable;
+import edu.usfca.cs.mr.climatechart.model.TemperaturePrecipWritable;
 
 /**
  * QUESTION-6:
@@ -19,7 +20,7 @@ import edu.usfca.cs.mr.climatechart.model.RegionMonthWritable;
  * porting it to a more feature-rich visualization library) 
  */
 public class ClimateChartReducer extends
-        Reducer<RegionMonthWritable, ClimateChartWritable, IntWritable, ClimateChartWritable> {
+        Reducer<RegionMonthWritable, TemperaturePrecipWritable, IntWritable, ClimateChartWritable> {
 
     private double maxAirTemp = Double.MIN_VALUE;
     private double minAirTemp = Double.MAX_VALUE;
@@ -34,47 +35,42 @@ public class ClimateChartReducer extends
      * We need to find max wetness for each month.
      */
     @Override
-    protected void reduce(RegionMonthWritable key, Iterable<ClimateChartWritable> values,
+    protected void reduce(RegionMonthWritable key, Iterable<TemperaturePrecipWritable> values,
                           Context context)
             throws IOException, InterruptedException {
-
         int month = key.getMonth().get();
         String regionName = key.getRegionName().toString();
-
         System.out.println("month:" + month);
         System.out.println("regionName:" + regionName);
-
         int dataCountForMonth = 0;
         double averageAirTemp = 0;
         double averagePrecipitation = 0;
-
         // calculate         
-        for (ClimateChartWritable climate : values) {
+        for (TemperaturePrecipWritable climate : values) {
             dataCountForMonth++;
             double airTemp = climate.getAirTemp().get();
             double precipitation = climate.getPrecipitation().get();
-
             averageAirTemp = averageAirTemp + airTemp;
             averagePrecipitation = averagePrecipitation + precipitation;
-
             if (airTemp < minAirTemp) {
                 minAirTemp = airTemp;
             }
-
             if (airTemp > maxAirTemp) {
                 maxAirTemp = airTemp;
             }
-
         }
         averageAirTemp = averageAirTemp / dataCountForMonth;
         averagePrecipitation = averagePrecipitation / dataCountForMonth;
+        //format Sample: 18.50
+        averageAirTemp = Math.round(averageAirTemp * 100.0) / 100.0;
+
+        averagePrecipitation = Double.parseDouble(String.format("%.5f", averagePrecipitation));
 
         context.write(new IntWritable(month),
                       new ClimateChartWritable(averageAirTemp,
                                                averagePrecipitation,
                                                minAirTemp,
                                                maxAirTemp));
-
     }
 
 }

@@ -7,8 +7,8 @@ import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Mapper;
 
-import edu.usfca.cs.mr.climatechart.model.ClimateChartWritable;
 import edu.usfca.cs.mr.climatechart.model.RegionMonthWritable;
+import edu.usfca.cs.mr.climatechart.model.TemperaturePrecipWritable;
 import edu.usfca.cs.mr.config.ConfigManager;
 import edu.usfca.cs.mr.constants.NcdcConstants;
 import edu.usfca.cs.mr.util.GeoHashHelper;
@@ -30,7 +30,7 @@ import edu.usfca.cs.mr.util.Utils;
  * 4th: value of output 
  */
 public class ClimateChartMapper
-        extends Mapper<LongWritable, Text, RegionMonthWritable, ClimateChartWritable> {
+        extends Mapper<LongWritable, Text, RegionMonthWritable, TemperaturePrecipWritable> {
 
     /**
      * 
@@ -74,19 +74,19 @@ public class ClimateChartMapper
             /**
              * Define Writables...
              */
-            ClimateChartWritable climateChartWritable = new ClimateChartWritable(airTemperature,
-                                                                                 precipitation);
+            TemperaturePrecipWritable temperaturePrecipWritable = new TemperaturePrecipWritable(airTemperature,
+                                                                                                precipitation);
 
             RegionMonthWritable regionMonthWritable = new RegionMonthWritable(new Text(regionName),
                                                                               new IntWritable(month));
 
-            context.write(regionMonthWritable, climateChartWritable);
+            context.write(regionMonthWritable, temperaturePrecipWritable);
         }
     }
 
     private boolean checkValidAirTemperature(double airTemperature) {
-        if (airTemperature >= NcdcConstants.EXTREME_LOW
-                && airTemperature <= NcdcConstants.EXTREME_HIGH) {
+        if (airTemperature >= NcdcConstants.EXTREME_TEMP_LOW
+                && airTemperature <= NcdcConstants.EXTREME_TEMP_HIGH) {
             return true;
         }
         return false;

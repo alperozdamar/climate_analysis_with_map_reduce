@@ -12,29 +12,25 @@ import org.apache.hadoop.io.WritableComparable;
  * Values for Q-4 
  *
  */
-public class ClimateChartWritable implements WritableComparable<ClimateChartWritable> {
+public class TemperaturePrecipWritable implements WritableComparable<TemperaturePrecipWritable> {
 
     private DoubleWritable airTemp;
     private DoubleWritable precipitation;
-    private DoubleWritable minAirTemp;
-    private DoubleWritable maxAirTemp;
 
-    public ClimateChartWritable() {
+    public TemperaturePrecipWritable() {
         this.airTemp = new DoubleWritable();
         this.precipitation = new DoubleWritable();
     }
 
-    public ClimateChartWritable(double airTemp, double precipitation) {
+    public TemperaturePrecipWritable(double airTemp, double precipitation) {
         this.airTemp = new DoubleWritable(airTemp);
         this.precipitation = new DoubleWritable(precipitation);
     }
 
-    public ClimateChartWritable(double averageAirTemp, double averagePrecipitation,
-                                double minAirTemp, double maxAirTemp) {
+    public TemperaturePrecipWritable(double averageAirTemp, double averagePrecipitation,
+                                     double minAirTemp, double maxAirTemp) {
         this.airTemp = new DoubleWritable(averageAirTemp);
         this.precipitation = new DoubleWritable(averagePrecipitation);
-        this.minAirTemp = new DoubleWritable(minAirTemp);//for reducer output
-        this.maxAirTemp = new DoubleWritable(maxAirTemp);//for reducer output
 
     }
 
@@ -42,16 +38,14 @@ public class ClimateChartWritable implements WritableComparable<ClimateChartWrit
     public void write(DataOutput out) throws IOException {
         airTemp.write(out);
         precipitation.write(out);
-        minAirTemp.write(out);//for reducer output
-        maxAirTemp.write(out);//for reducer output
+
     }
 
     @Override
     public void readFields(DataInput in) throws IOException {
         airTemp.readFields(in);
         precipitation.readFields(in);
-        minAirTemp.readFields(in); //for reducer output
-        maxAirTemp.readFields(in);//for reducer output
+
     }
 
     @Override
@@ -76,27 +70,11 @@ public class ClimateChartWritable implements WritableComparable<ClimateChartWrit
     }
 
     @Override
-    public int compareTo(ClimateChartWritable o) {
+    public int compareTo(TemperaturePrecipWritable o) {
         int result = this.precipitation.compareTo(o.precipitation);
         result = result == 0 ? this.airTemp.compareTo(o.airTemp) : result;
         return result;
 
-    }
-
-    public DoubleWritable getMinAirTemp() {
-        return minAirTemp;
-    }
-
-    public void setMinAirTemp(DoubleWritable minAirTemp) {
-        this.minAirTemp = minAirTemp;
-    }
-
-    public DoubleWritable getMaxAirTemp() {
-        return maxAirTemp;
-    }
-
-    public void setMaxAirTemp(DoubleWritable maxAirTemp) {
-        this.maxAirTemp = maxAirTemp;
     }
 
 }

@@ -11,6 +11,7 @@ import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 
 import edu.usfca.cs.mr.climatechart.model.ClimateChartWritable;
 import edu.usfca.cs.mr.climatechart.model.RegionMonthWritable;
+import edu.usfca.cs.mr.climatechart.model.TemperaturePrecipWritable;
 import edu.usfca.cs.mr.config.ConfigManager;
 import edu.usfca.cs.mr.util.Utils;
 
@@ -52,7 +53,7 @@ public class ClimateChartJob {
 
             /* Outputs from the Mapper. */
             job.setMapOutputKeyClass(RegionMonthWritable.class);
-            job.setMapOutputValueClass(ClimateChartWritable.class);
+            job.setMapOutputValueClass(TemperaturePrecipWritable.class);
 
             /* Combiner class. Combiners are run between the Map and Reduce
              * phases to reduce the amount of output that must be transmitted.
