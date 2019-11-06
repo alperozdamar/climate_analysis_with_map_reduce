@@ -22,9 +22,6 @@ import edu.usfca.cs.mr.climatechart.model.TemperaturePrecipWritable;
 public class ClimateChartReducer extends
         Reducer<RegionMonthWritable, TemperaturePrecipWritable, IntWritable, ClimateChartWritable> {
 
-    private double maxAirTemp = Double.MIN_VALUE;
-    private double minAirTemp = Double.MAX_VALUE;
-
     public ClimateChartReducer() {
     }
 
@@ -38,6 +35,10 @@ public class ClimateChartReducer extends
     protected void reduce(RegionMonthWritable key, Iterable<TemperaturePrecipWritable> values,
                           Context context)
             throws IOException, InterruptedException {
+
+        double maxAirTemp = Double.MIN_VALUE;
+        double minAirTemp = Double.MAX_VALUE;
+
         int month = key.getMonth().get();
         String regionName = key.getRegionName().toString();
         System.out.println("month:" + month);
@@ -65,6 +66,9 @@ public class ClimateChartReducer extends
         averageAirTemp = Math.round(averageAirTemp * 100.0) / 100.0;
 
         averagePrecipitation = Double.parseDouble(String.format("%.5f", averagePrecipitation));
+
+        System.out.println(averageAirTemp + "," + averagePrecipitation + "," + minAirTemp + ","
+                + maxAirTemp);
 
         context.write(new IntWritable(month),
                       new ClimateChartWritable(averageAirTemp,

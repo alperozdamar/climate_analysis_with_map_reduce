@@ -66,6 +66,7 @@ public class ClimateChartMapper
                  * Find the month first from UTC_DATE!
                  */
                 month = Utils.getMonth(dateString);
+
                 check = true;
             }
         }
@@ -85,8 +86,8 @@ public class ClimateChartMapper
     }
 
     private boolean checkValidAirTemperature(double airTemperature) {
-        if (airTemperature >= NcdcConstants.EXTREME_TEMP_LOW
-                && airTemperature <= NcdcConstants.EXTREME_TEMP_HIGH) {
+        if (airTemperature > NcdcConstants.EXTREME_TEMP_LOW
+                && airTemperature < NcdcConstants.EXTREME_TEMP_HIGH) {
             return true;
         }
         return false;
@@ -94,7 +95,7 @@ public class ClimateChartMapper
 
     private boolean checkValidPrecipitation(double precipitation) {
         if (precipitation >= NcdcConstants.PRECIPITATION_LOWEST
-                && precipitation <= NcdcConstants.PRECIPITATION_HIGHEST) {
+                && precipitation < NcdcConstants.PRECIPITATION_HIGHEST) {
             return true;
         }
         return false;
