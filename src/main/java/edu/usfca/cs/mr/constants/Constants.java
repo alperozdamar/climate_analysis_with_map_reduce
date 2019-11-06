@@ -14,6 +14,8 @@ public class Constants {
     public static final String GEO_HASH_HAWAII        = "8e3"; //Island of Hawai
     //-73.74   41.79
 
+    public static final int    GEO_HASH_PRECISION     = 4;
+
     public static void main(String[] args) {
 
         //CA_Yosemite_Village

@@ -42,11 +42,39 @@ public class Utils {
         System.out.println(getMonth(dateString));
     }
 
-    public static boolean isExtreme(double value){
-        if(value == NcdcConstants.EXTREME_HIGH || value == NcdcConstants.EXTREME_LOW){
-            return true;
+    public static boolean isValidTemp(double value){
+        if(value == NcdcConstants.EXTREME_TEMP_HIGH || value == NcdcConstants.EXTREME_TEMP_LOW){
+            return false;
         }
-        return false;
+        return true;
+    }
+
+    public static boolean isValidHumid(int humidity){
+        if(humidity < NcdcConstants.RELATIVE_HUMIDITY_LOWEST || humidity > NcdcConstants.RELATIVE_HUMIDITY_HIGHEST){
+            return false;
+        }
+        return true;
+    }
+
+    public static boolean isValidWetness(int wetness){
+        if(wetness == NcdcConstants.EXTREME_WET || wetness == NcdcConstants.EXTREME_DRY){
+            return false;
+        }
+        return true;
+    }
+
+    public static boolean isValidSolarRad(int solarRad){
+        if(solarRad == NcdcConstants.EXTREME_SR_HIGH || solarRad == NcdcConstants.EXTREME_SR_LOW){
+            return false;
+        }
+        return true;
+    }
+
+    public static boolean isValidWind(double windSpeed){
+        if(windSpeed<0){
+            return false;
+        }
+        return true;
     }
 
 }

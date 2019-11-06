@@ -25,14 +25,21 @@ public class NcdcConstants {
     public static final int    WIND_1_5            = 21;
     public static final int    WIND_FLAG           = 22;
 
-    public static final double EXTREME_HIGH              = 9999.0;
-    public static final double EXTREME_LOW               = -9999.0;
+    public static final double EXTREME_TEMP_HIGH   = 9999.0;
+    public static final double EXTREME_TEMP_LOW    = -9999.0;
 
     public static final int    EXTREME_WET               = 9999;
     public static final int    EXTREME_DRY               = -9999;
 
     public static final int    RELATIVE_HUMIDITY_LOWEST  = 0;
     public static final int    RELATIVE_HUMIDITY_HIGHEST = 100;
+    public static final int    EXTREME_HUMIDITY_LOW      = -9999;
+    public static final int    EXTREME_HUMIDITY_HIGH     = 9999;
+
+    public static final int    EXTREME_SR_LOW            = -99999;
+    public static final int    EXTREME_SR_HIGH           = 99999;
+
+    public static final double EXTREME_WIND_LOW          = -99.0;
 
     public static final String SF_TYPE_RAW         = "R";
     public static final String SF_TYPE_CORRECT     = "C";

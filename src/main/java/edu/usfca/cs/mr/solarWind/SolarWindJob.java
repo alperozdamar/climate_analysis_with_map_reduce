@@ -1,18 +1,24 @@
-package edu.usfca.cs.mr.movingOut;
+package edu.usfca.cs.mr.solarWind;
 
-import edu.usfca.cs.mr.movingOut.models.AvgClimateWritable;
+import edu.usfca.cs.mr.movingOut.MovingOutJob;
+import edu.usfca.cs.mr.movingOut.MovingOutMapper;
+import edu.usfca.cs.mr.movingOut.MovingOutReducer;
 import edu.usfca.cs.mr.movingOut.models.ClimateWritable;
 import edu.usfca.cs.mr.movingOut.models.MonthLocationWritable;
+import edu.usfca.cs.mr.solarWind.models.AvgSolarWindWritable;
+import edu.usfca.cs.mr.solarWind.models.SolarWindWritable;
 import edu.usfca.cs.mr.util.Utils;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.Path;
+import org.apache.hadoop.io.DoubleWritable;
+import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Job;
 import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 
 import java.io.File;
 
-public class MovingOutJob {
+public class SolarWindJob {
     public static void main(String[] args) {
         try {
             Configuration conf = new Configuration();
@@ -21,17 +27,17 @@ public class MovingOutJob {
             Utils.deleteDirectory(new File(args[1]));
 
             /* Job Name. You'll see this in the YARN webapp */
-            Job job = Job.getInstance(conf, "Hiep-Alper-Project2-Moving Out Job");
+            Job job = Job.getInstance(conf, "Hiep-Alper-Project2-Solar Wind Job");
 
             /* Current class */
-            job.setJarByClass(MovingOutJob.class);
+            job.setJarByClass(SolarWindJob.class);
 
             /* Mapper class */
-            job.setMapperClass(MovingOutMapper.class);
+            job.setMapperClass(SolarWindMapper.class);
 
             /* Outputs from the Mapper. */
-            job.setMapOutputKeyClass(MonthLocationWritable.class);
-            job.setMapOutputValueClass(ClimateWritable.class);
+            job.setMapOutputKeyClass(Text.class);
+            job.setMapOutputValueClass(SolarWindWritable.class);
 
             /* Combiner class. Combiners are run between the Map and Reduce
              * phases to reduce the amount of output that must be transmitted.
@@ -42,11 +48,11 @@ public class MovingOutJob {
             //job.setCombinerClass(WordCountReducer.class);
 
             /* Reducer class */
-            job.setReducerClass(MovingOutReducer.class);
+            job.setReducerClass(SolarWindReducer.class);
 
             /* Outputs from the Reducer */
-            job.setOutputKeyClass(MonthLocationWritable.class);
-            job.setOutputValueClass(AvgClimateWritable.class);
+            job.setOutputKeyClass(Text.class);
+            job.setOutputValueClass(AvgSolarWindWritable.class);
 
             /* Reduce tasks */
             job.setNumReduceTasks(1);

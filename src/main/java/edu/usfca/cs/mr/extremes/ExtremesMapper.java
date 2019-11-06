@@ -22,7 +22,7 @@ public class ExtremesMapper
     private double threshold     = 2.0;
 
     private boolean validTemp(double temperature) {
-        if (temperature == NcdcConstants.EXTREME_HIGH || temperature == NcdcConstants.EXTREME_LOW) {
+        if (temperature == NcdcConstants.EXTREME_TEMP_HIGH || temperature == NcdcConstants.EXTREME_TEMP_LOW) {
             return false;
         }
         return true;
@@ -50,7 +50,7 @@ public class ExtremesMapper
         double airTemp = Double.valueOf(values[NcdcConstants.AIR_TEMPERATURE]);
         double surfaceTemp = Double.valueOf(values[NcdcConstants.SURFACE_TEMPERATURE]);
         if (!sfType.equals("C") || !sfFlag.equals("0")) {
-            surfaceTemp = NcdcConstants.EXTREME_HIGH;
+            surfaceTemp = NcdcConstants.EXTREME_TEMP_HIGH;
         }
 
         //Only write value that is denotes corrected and good data.
@@ -88,10 +88,10 @@ public class ExtremesMapper
                                                                                  values[NcdcConstants.UTC_DATE],
                                                                                  values[NcdcConstants.UTC_TIME]);
             TemperatureWritable temperatureWritable = new TemperatureWritable(checkAirTemp ? airTemp
-                    : NcdcConstants.EXTREME_HIGH,
+                    : NcdcConstants.EXTREME_TEMP_HIGH,
                                                                               checkGroundTemp
                                                                                       ? surfaceTemp
-                                                                                      : NcdcConstants.EXTREME_HIGH);
+                                                                                      : NcdcConstants.EXTREME_TEMP_HIGH);
             context.write(temperatureWritable, locationTimeWritable);
         }
     }
