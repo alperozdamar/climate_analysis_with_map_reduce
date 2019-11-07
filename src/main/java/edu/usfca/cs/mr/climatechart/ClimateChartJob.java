@@ -68,7 +68,7 @@ public class ClimateChartJob {
 
             /* Outputs from the Reducer */
             job.setOutputKeyClass(IntWritable.class); //month
-            job.setOutputValueClass(ClimateChartWritable.class); //temperature,precipitation
+            job.setOutputValueClass(ClimateChartWritable.class); //temperature,precipitation,minAirTemp,maxAirTemp
 
             /* Reduce tasks */
             job.setNumReduceTasks(1);
