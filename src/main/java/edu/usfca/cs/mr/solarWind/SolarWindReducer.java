@@ -21,7 +21,7 @@ public class SolarWindReducer extends Reducer<Text, SolarWindWritable, Text, Avg
                 countSolarRadiation++;
                 avgSolarRadiation += (value.getSolarRadiation().get() - avgSolarRadiation) / countSolarRadiation;
             }
-            if(Utils.isValidTemp(value.getWindSpeed().get())){
+            if(Utils.isValidWind(value.getWindSpeed().get())){
                 countWindSpeed++;
                 avgWindSpeed += (value.getWindSpeed().get() - avgWindSpeed) / countWindSpeed;
             }

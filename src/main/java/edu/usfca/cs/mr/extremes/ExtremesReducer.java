@@ -40,8 +40,7 @@ public class ExtremesReducer extends
         // calculate the total count
         ArrayList<LocationTimeWritable> locations = new ArrayList<>();
         for (LocationTimeWritable locationTime : values) {
-            locations.add(new LocationTimeWritable(locationTime.getLon().get(),
-                                                   locationTime.getLat().get(),
+            locations.add(new LocationTimeWritable(locationTime.getLocation().toString(),
                                                    locationTime.getUtcDate().toString(),
                                                    locationTime.getUtcTime().toString()));
         }

@@ -2,6 +2,8 @@ package edu.usfca.cs.mr.extremes;
 
 import java.io.IOException;
 
+import edu.usfca.cs.mr.constants.Constants;
+import edu.usfca.cs.mr.util.Geohash;
 import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Mapper;
@@ -13,13 +15,13 @@ import edu.usfca.cs.mr.extremes.models.TemperatureWritable;
 public class ExtremesMapper
         extends Mapper<LongWritable, Text, TemperatureWritable, LocationTimeWritable> {
 
-    private double maxAirTemp    = Double.NEGATIVE_INFINITY;
-    private double minAirTemp    = Double.MAX_VALUE;
+    private double maxAirTemp = Double.NEGATIVE_INFINITY;
+    private double minAirTemp = Double.MAX_VALUE;
     private double maxGroundTemp = Double.NEGATIVE_INFINITY;
     private double minGroundTemp = Double.MAX_VALUE;
 
     //Threshold between current temp and max/min temp,temp changing should less than threshold
-    private double threshold     = 2.0;
+    private double threshold = 1.0;
 
     private boolean validTemp(double temperature) {
         if (temperature == NcdcConstants.EXTREME_TEMP_HIGH || temperature == NcdcConstants.EXTREME_TEMP_LOW) {
@@ -29,7 +31,6 @@ public class ExtremesMapper
     }
 
     /**
-     * 
      * value is the one line in the file...
      */
     @Override
@@ -82,16 +83,17 @@ public class ExtremesMapper
             }
         }
         if (checkAirTemp || checkGroundTemp) {
-            LocationTimeWritable locationTimeWritable = new LocationTimeWritable(Double
-                    .valueOf(values[NcdcConstants.LONGITUDE]),
-                                                                                 Double.valueOf(values[NcdcConstants.LATITUDE]),
-                                                                                 values[NcdcConstants.UTC_DATE],
-                                                                                 values[NcdcConstants.UTC_TIME]);
+            String location = Geohash.encode(Float.valueOf(values[NcdcConstants.LATITUDE]),
+                    Float.valueOf(values[NcdcConstants.LONGITUDE]),
+                    Constants.GEO_HASH_PRECISION);
+            LocationTimeWritable locationTimeWritable = new LocationTimeWritable(location,
+                    values[NcdcConstants.UTC_DATE],
+                    values[NcdcConstants.UTC_TIME]);
             TemperatureWritable temperatureWritable = new TemperatureWritable(checkAirTemp ? airTemp
                     : NcdcConstants.EXTREME_TEMP_HIGH,
-                                                                              checkGroundTemp
-                                                                                      ? surfaceTemp
-                                                                                      : NcdcConstants.EXTREME_TEMP_HIGH);
+                    checkGroundTemp
+                            ? surfaceTemp
+                            : NcdcConstants.EXTREME_TEMP_HIGH);
             context.write(temperatureWritable, locationTimeWritable);
         }
     }

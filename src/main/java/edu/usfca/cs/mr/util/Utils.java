@@ -9,6 +9,20 @@ import java.util.Date;
 import edu.usfca.cs.mr.constants.NcdcConstants;
 
 public class Utils {
+    public static void listFilesForFolder(final File folder) {
+        for (final File fileEntry : folder.listFiles()) {
+            if (fileEntry.isDirectory()) {
+                listFilesForFolder(fileEntry);
+            } else {
+                System.out.println(fileEntry.getName());
+            }
+        }
+    }
+
+    public static void main(String[] args) {
+        final File folder = new File("2019");
+        listFilesForFolder(folder);
+    }
 
     public static void deleteDirectory(File file) {
         File[] contents = file.listFiles();
@@ -49,11 +63,6 @@ public class Utils {
             e.printStackTrace();
             return -1;
         }
-    }
-
-    public static void main(String[] args) {
-        String dateString = "20120625";
-        System.out.println(getMonth(dateString));
     }
 
     public static boolean isValidTemp(double value) {

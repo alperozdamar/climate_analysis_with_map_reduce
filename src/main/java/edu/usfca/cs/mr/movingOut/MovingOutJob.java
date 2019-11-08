@@ -1,6 +1,6 @@
 package edu.usfca.cs.mr.movingOut;
 
-import edu.usfca.cs.mr.movingOut.models.AvgClimateWritable;
+import edu.usfca.cs.mr.movingOut.models.OutputClimateWritable;
 import edu.usfca.cs.mr.movingOut.models.ClimateWritable;
 import edu.usfca.cs.mr.movingOut.models.MonthLocationWritable;
 import edu.usfca.cs.mr.util.Utils;
@@ -46,7 +46,7 @@ public class MovingOutJob {
 
             /* Outputs from the Reducer */
             job.setOutputKeyClass(MonthLocationWritable.class);
-            job.setOutputValueClass(AvgClimateWritable.class);
+            job.setOutputValueClass(OutputClimateWritable.class);
 
             /* Reduce tasks */
             job.setNumReduceTasks(1);
