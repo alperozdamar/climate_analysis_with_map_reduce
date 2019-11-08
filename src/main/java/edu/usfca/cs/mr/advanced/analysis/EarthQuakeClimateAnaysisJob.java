@@ -9,7 +9,7 @@ import org.apache.hadoop.mapreduce.Job;
 import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 
-import edu.usfca.cs.mr.drying.models.WetnessWritable;
+import edu.usfca.cs.mr.advanced.analysis.model.EarthQuakeWritable;
 import edu.usfca.cs.mr.util.Utils;
 
 /**
@@ -27,18 +27,25 @@ import edu.usfca.cs.mr.util.Utils;
  * Was your hypothesis correct?
  * 
  * 
- * 7 weather station... 9r - 9q - 9mg 9mu 9mv 9my 9mz hashcodes cover these placess....
- * Bodega Bay CA        -> 38.32, -123.07
- * Fallbrook  CA        -> 33.44 -117.19 
- * Merced     CA        -> 37.24 -120.88
- * Redding    CA        -> 40.65 -122.61
- * Santa Barbara CA     -> 34.41 -119.88    
- * Stovepipe Wells CA   -> 36.60  -117.14
- * Yosemite Village CA  -> 37.76 -119.82   
- *   
- * and may be 2 states of nevada...
+ * 7 weather station
+ * Bodega Bay CA        -> 38.32 -123.07 OK
+ *                                                   Fallbrook  CA        -> 33.44 -117.19  CANCEL
+ * Merced     CA        -> 37.24 -120.88 OK
+ *                                                   Redding    CA        -> 40.65 -122.61 CANCEL
+ * Santa Barbara CA     -> 34.41 -119.88   OK   
+ * Stovepipe Wells CA   -> 36.60  -117.14  OK
+ * Yosemite Village CA  -> 37.76 -119.82   OK
+ * Baker NV             -> 39.01 -114.21   EXCLUDE THIS FROM 9q!!!
+ * Mercury NV           -> 36.62 -116.02   EXCLUDE THIS FROM 9q!!!
+ *
+        testEarthQuakeHashMap.Size:5
+            Location:37.24 -120.88
+            Location:34.41 -119.88
+            Location:38.32 -123.07
+            Location:36.6 -117.14
+            Location:37.76 -119.82
+ *
  */
-
 public class EarthQuakeClimateAnaysisJob {
 
     public static void main(String[] args) {
@@ -59,7 +66,7 @@ public class EarthQuakeClimateAnaysisJob {
 
             /* Outputs from the Mapper. */
             job.setMapOutputKeyClass(IntWritable.class);
-            job.setMapOutputValueClass(WetnessWritable.class);
+            job.setMapOutputValueClass(EarthQuakeWritable.class);
 
             /* Combiner class. Combiners are run between the Map and Reduce
              * phases to reduce the amount of output that must be transmitted.
@@ -74,7 +81,7 @@ public class EarthQuakeClimateAnaysisJob {
 
             /* Outputs from the Reducer */
             job.setOutputKeyClass(IntWritable.class);
-            job.setOutputValueClass(WetnessWritable.class);
+            job.setOutputValueClass(EarthQuakeWritable.class);
 
             /* Reduce tasks */
             job.setNumReduceTasks(1);

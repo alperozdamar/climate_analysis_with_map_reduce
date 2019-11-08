@@ -23,6 +23,10 @@ public class Constants {
 
     public static final String GEO_HASH_EARTQUAKE_PART_1              = "9r";
     public static final String GEO_HASH_EARTQUAKE_PART_2              = "9q";
+
+    public static final String GEO_HASH_EARTQUAKE_EXCLUDE_2_1         = "9qy";
+    public static final String GEO_HASH_EARTQUAKE_EXCLUDE_2_2         = "9qt";
+
     public static final String GEO_HASH_EARTQUAKE_PART_3_1            = "9mg";
     public static final String GEO_HASH_EARTQUAKE_PART_3_2            = "9mu";
     public static final String GEO_HASH_EARTQUAKE_PART_3_3            = "9mv";

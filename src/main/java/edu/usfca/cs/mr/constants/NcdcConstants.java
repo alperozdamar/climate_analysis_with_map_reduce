@@ -26,8 +26,8 @@ public class NcdcConstants {
     public static final int    WIND_1_5                  = 21;
     public static final int    WIND_FLAG                 = 22;
 
-    public static final double EXTREME_TEMP_HIGH   = 9999.0;
-    public static final double EXTREME_TEMP_LOW    = -9999.0;
+    public static final double EXTREME_TEMP_HIGH         = 9999.0;
+    public static final double EXTREME_TEMP_LOW          = -9999.0;
 
     public static final int    EXTREME_WET               = 9999;
     public static final int    EXTREME_DRY               = -9999;
@@ -41,6 +41,9 @@ public class NcdcConstants {
     public static final int    EXTREME_SR_HIGH           = 99999;
 
     public static final double EXTREME_WIND_LOW          = -99.0;
+
+    public static final double EXTREME_MOISTURE_HIGH     = 99.0;
+    public static final double EXTREME_MOISTURE_LOW      = -99.0;
 
     //Sohra holds the world record for the highest rainfall received 1,041.8 inches of rainfall
     public static final double PRECIPITATION_HIGHEST     = 2000.0; //so it should not be higher than 2000 hopefully :)

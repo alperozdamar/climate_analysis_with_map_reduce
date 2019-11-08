@@ -1,13 +1,11 @@
 package edu.usfca.cs.mr.advanced.analysis;
 
 import java.io.IOException;
-import java.util.HashMap;
 
 import org.apache.hadoop.io.IntWritable;
 import org.apache.hadoop.mapreduce.Reducer;
 
-import edu.usfca.cs.mr.constants.NcdcConstants;
-import edu.usfca.cs.mr.drying.models.WetnessWritable;
+import edu.usfca.cs.mr.advanced.analysis.model.EarthQuakeWritable;
 
 /**
  * Drying out: Choose a region in North America (defined by Geohash, which may include several
@@ -22,17 +20,7 @@ import edu.usfca.cs.mr.drying.models.WetnessWritable;
  *
  */
 public class EarthQuakeClimateReducer
-        extends Reducer<IntWritable, WetnessWritable, IntWritable, WetnessWritable> {
-
-    private HashMap<Integer, Integer> monthToAverageWetness = initializeHashMap();
-
-    private boolean checkValidWetness(IntWritable wetness) {
-        if (wetness.get() == NcdcConstants.EXTREME_WET
-                || wetness.get() == NcdcConstants.EXTREME_DRY) {
-            return false;
-        }
-        return true;
-    }
+        extends Reducer<IntWritable, EarthQuakeWritable, IntWritable, EarthQuakeWritable> {
 
     public EarthQuakeClimateReducer() {
     }
@@ -44,57 +32,33 @@ public class EarthQuakeClimateReducer
      * We need to find max wetness for each month.
      */
     @Override
-    protected void reduce(IntWritable key, Iterable<WetnessWritable> values, Context context)
+    protected void reduce(IntWritable key, Iterable<EarthQuakeWritable> values, Context context)
             throws IOException, InterruptedException {
 
         //OUR KEY is Month...
-        int month = key.get();
-        int dataCountForMonth = 0;
-        int averageWetness = 0; //May double it!!! I think no need for now.
+        int year = key.get();
+        int dataCountForYear = 0;
+        double averageMoisture = 0;
+        double averageSoilTemp = 0;
+        double averageSurfaceTemp = 0;
 
         // calculate         
-        for (WetnessWritable wetness : values) {
-            if (checkValidWetness(wetness.getWetness())) {
-                dataCountForMonth++;
-                int wetnessIntValue = wetness.getWetness().get();
-                averageWetness = averageWetness + wetnessIntValue;
-            }
+        for (EarthQuakeWritable climate : values) {
+            dataCountForYear++;
+            averageMoisture = averageMoisture + climate.getSoilMoisture().get();
+            averageSoilTemp = averageSoilTemp + climate.getSoilTemp().get();
+            averageSurfaceTemp = averageSurfaceTemp + climate.getSurfaceTemp().get();
         }
-        averageWetness = averageWetness / dataCountForMonth;
+        averageMoisture = averageMoisture / dataCountForYear;
+        averageSoilTemp = averageSoilTemp / dataCountForYear;
+        averageSurfaceTemp = averageSurfaceTemp / dataCountForYear;
 
-        if (month == 0) {
-            System.out.println("Month 1 average is " + averageWetness);
-        }
+        averageMoisture = Math.round(averageMoisture * 100.0) / 100.0;
+        averageSoilTemp = Math.round(averageSoilTemp * 100.0) / 100.0;
+        averageSurfaceTemp = Math.round(averageSurfaceTemp * 100.0) / 100.0;
 
-        if (month == 1) {
-            System.out.println("Month 2 average is " + averageWetness);
-        }
+        context.write(new IntWritable(year),
+                      new EarthQuakeWritable(averageMoisture, averageSoilTemp, averageSurfaceTemp));
 
-        if (month == 2) {
-            System.out.println("Month 3 average is " + averageWetness);
-        }
-
-        monthToAverageWetness.put(month, averageWetness);
-    }
-
-    /**
-       * 12 values (For Each Month)
-       * @return
-       */
-    private HashMap<Integer, Integer> initializeHashMap() {
-        HashMap<Integer, Integer> monthToMinWetness = new HashMap<>();
-        for (int i = 0; i < 12; i++) { //0=January...... 11=December
-            monthToMinWetness.put(i, Integer.MIN_VALUE);//means MAX DRYNESS      // 9999999999....
-        }
-        return monthToMinWetness;
-    }
-
-    @Override
-    protected void cleanup(Context context) throws IOException, InterruptedException {
-        //        super.cleanup(context);
-        for (int i = 0; i < 12; i++) { //0=January...... 11=December
-            context.write(new IntWritable(i + 1),
-                          new WetnessWritable(monthToAverageWetness.get(i)));//means MAX DRYNESS      // 9999999999....
-        }
     }
 }

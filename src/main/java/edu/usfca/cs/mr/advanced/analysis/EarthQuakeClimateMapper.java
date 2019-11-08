@@ -1,6 +1,7 @@
 package edu.usfca.cs.mr.advanced.analysis;
 
 import java.io.IOException;
+import java.util.Calendar;
 import java.util.HashMap;
 
 import org.apache.hadoop.io.IntWritable;
@@ -8,22 +9,14 @@ import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Mapper;
 
+import edu.usfca.cs.mr.advanced.analysis.model.EarthQuakeWritable;
 import edu.usfca.cs.mr.constants.Constants;
 import edu.usfca.cs.mr.constants.NcdcConstants;
-import edu.usfca.cs.mr.drying.models.WetnessWritable;
 import edu.usfca.cs.mr.util.GeoHashHelper;
+import edu.usfca.cs.mr.util.Geohash;
 import edu.usfca.cs.mr.util.Utils;
 
 /**
- * Drying out: Choose a region in North America (defined by Geohash, which may include several
- * weather stations) and determine when its driest month is. This should include a 
- * histogram with data from each month. 
- *
- *        20   WETNESS  [5 chars]  cols 119 -- 123 
-          The presence or absence of moisture due to precipitation, in Ohms. 
-          High values (>= 1000) indicate an absence of moisture.  Low values 
-          (< 1000) indicate the presence of moisture.          
-          !!!!!!! HIGH WETNESS MEANS MORE DRYNESS!!!!!!
  *
  * LongWritable : lineNo
  * Text : line it self
@@ -31,7 +24,7 @@ import edu.usfca.cs.mr.util.Utils;
  * 4th: value of output 
  */
 public class EarthQuakeClimateMapper
-        extends Mapper<LongWritable, Text, IntWritable, WetnessWritable> {
+        extends Mapper<LongWritable, Text, IntWritable, EarthQuakeWritable> {
 
     /**
      * 
@@ -43,17 +36,16 @@ public class EarthQuakeClimateMapper
         // tokenize into words.
         String[] values = value.toString().split("[ ]+");
 
-        int wetness = Integer.valueOf(values[NcdcConstants.WETNESS]);
-        String wetnessFlag = values[NcdcConstants.WET_FLAG];
+        double soilMoisture = Double.valueOf(values[NcdcConstants.SOIL_MOISTURE]);
+        double soilTemp = Double.valueOf(values[NcdcConstants.SOIL_TEMPERATURE_5]);
+        double surfaceTemp = Double.valueOf(values[NcdcConstants.SURFACE_TEMPERATURE]);
 
-        if (!wetnessFlag.equals("0")) {
-            wetness = NcdcConstants.EXTREME_WET;
-        }
         //Only write value that is denotes corrected and good data.        
-        boolean checkWetness = false;
-        int month = -1;
+        boolean checkData = false;
+        int year = -1;
 
-        if (checkValidWetness(wetness)) {
+        if (checkValidSoilMoisture(soilMoisture) && checkValidTemperature(soilTemp)
+                && checkValidTemperature(surfaceTemp)) {
 
             /**
              * Choose a region in North America (defined by Geohash, which may include several weather stations)
@@ -65,28 +57,38 @@ public class EarthQuakeClimateMapper
                  * Find the month first from UTC_DATE!
                  */
                 String dateString = String.valueOf(values[NcdcConstants.UTC_DATE]);
-                month = Utils.getMonth(dateString);
-                checkWetness = true;
-                System.out.println("YES! Earth Quake Region:"
-                        + Double.valueOf(values[NcdcConstants.LONGITUDE] + ","
-                                + Double.valueOf(values[NcdcConstants.LATITUDE])));
+                Calendar cal = Utils.getCalendar(dateString);
+                year = cal.get(Calendar.YEAR);
+                checkData = true;
+
             }
         }
 
-        if (checkWetness) {
+        if (checkData) {
             /**
              * Define Writables...
              */
-            WetnessWritable wetnessWritable = new WetnessWritable(wetness);
-            context.write(new IntWritable(month), wetnessWritable);
+            EarthQuakeWritable earthQuakeWritable = new EarthQuakeWritable(soilMoisture,
+                                                                           soilTemp,
+                                                                           surfaceTemp);
+            context.write(new IntWritable(year), earthQuakeWritable);
         }
     }
 
-    private boolean checkValidWetness(int wetness) {
-        if (wetness == NcdcConstants.EXTREME_WET || wetness == NcdcConstants.EXTREME_DRY) {
-            return false;
+    private boolean checkValidTemperature(double soilTemp) {
+        if (soilTemp > NcdcConstants.EXTREME_TEMP_LOW
+                && soilTemp < NcdcConstants.EXTREME_TEMP_HIGH) {
+            return true;
         }
-        return true;
+        return false;
+    }
+
+    private boolean checkValidSoilMoisture(double soilMoisture) {
+        if (soilMoisture > NcdcConstants.EXTREME_MOISTURE_LOW
+                && soilMoisture < NcdcConstants.EXTREME_MOISTURE_HIGH) {
+            return true;
+        }
+        return false;
     }
 
     public static void main(String[] args) {
@@ -95,6 +97,10 @@ public class EarthQuakeClimateMapper
         float latitude = 34.41f;
 
         GeoHashHelper.isChoosenRegion(Constants.GEO_HASH_SANTA_BARBARA, longtitude, latitude, 4);
+
+        System.out.println("Exlude this one for earthquake:" + Geohash.encode(39.01f, -114.21f, 4));
+        System.out.println("Exlude this one for earthquake:" + Geohash.encode(36.62f, -116.02f, 4));
+
     }
 
     private HashMap<Integer, Integer> initializeHashMap() {
