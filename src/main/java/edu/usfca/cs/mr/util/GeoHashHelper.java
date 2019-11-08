@@ -26,7 +26,8 @@ public class GeoHashHelper {
     }
 
     //Santa Barbara: longtitude:-119.88   latitude:34.41 
-    public static boolean isChoosenRegion(String choosenRegion, double longitude, double latitude) {
+    public static boolean isChoosenRegion(String choosenRegion, double longitude, double latitude,
+                                          int precision) {
         /**
          * TODO:
          * Use GeoHash Algorithm...
@@ -37,6 +38,20 @@ public class GeoHashHelper {
 
         if (value.equalsIgnoreCase(choosenRegion)) {
             //System.out.println("This is Santa Barbara! Heyyoo!!");
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public static boolean isInEarthQuakeRegion(double longitude, double latitude) {
+        if (isChoosenRegion(Constants.GEO_HASH_EARTQUAKE_PART_1, longitude, latitude, 2)
+                || isChoosenRegion(Constants.GEO_HASH_EARTQUAKE_PART_2, longitude, latitude, 2)
+                || isChoosenRegion(Constants.GEO_HASH_EARTQUAKE_PART_3_1, longitude, latitude, 2)
+                || isChoosenRegion(Constants.GEO_HASH_EARTQUAKE_PART_3_2, longitude, latitude, 3)
+                || isChoosenRegion(Constants.GEO_HASH_EARTQUAKE_PART_3_3, longitude, latitude, 3)
+                || isChoosenRegion(Constants.GEO_HASH_EARTQUAKE_PART_3_4, longitude, latitude, 3)
+                || isChoosenRegion(Constants.GEO_HASH_EARTQUAKE_PART_3_5, longitude, latitude, 3)) {
             return true;
         } else {
             return false;

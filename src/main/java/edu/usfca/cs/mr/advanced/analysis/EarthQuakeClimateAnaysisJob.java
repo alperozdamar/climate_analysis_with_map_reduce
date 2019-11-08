@@ -1,4 +1,4 @@
-package edu.usfca.cs.mr.climatechart;
+package edu.usfca.cs.mr.advanced.analysis;
 
 import java.io.File;
 
@@ -9,48 +9,57 @@ import org.apache.hadoop.mapreduce.Job;
 import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 
-import edu.usfca.cs.mr.climatechart.model.ClimateChartWritable;
-import edu.usfca.cs.mr.climatechart.model.RegionMonthWritable;
-import edu.usfca.cs.mr.climatechart.model.TemperaturePrecipWritable;
-import edu.usfca.cs.mr.config.ConfigManager;
+import edu.usfca.cs.mr.drying.models.WetnessWritable;
 import edu.usfca.cs.mr.util.Utils;
 
 /**
- * QUESTION-6:
- * Climate Chart: Given a Geohash prefix, create a climate chart for the region. 
- * This includes high, low, and average temperatures, as well as monthly average 
- * rainfall (precipitation). Here’s a (poor quality) script that will generate 
- * this for you.
+ * QUESTION-8:
  * 
- * Earn up to 1 point of extra credit for enhancing/improving this chart (or 
- * porting it to a more feature-rich visualization library)
+ * [3 pt] Now that you’re familiar with the dataset, it’s time to choose your own adventure. 
+ * Come up with a question that you will likely be able to answer with climate data, and then 
+ * implement a MapReduce job (or set of jobs) to answer the question. This question is worth the
+ * most points, so it should be more sophisticated than the others. You should describe:
+ * 
+ * The question you want to answer or problem you want to solve
+ * Your hypothesis: without doing any analysis, what is the most likely outcome?
+ * Features you will use
+ * A writeup describing the results, including visualizations/plots/etc if applicable.
+ * Was your hypothesis correct?
+ * 
+ * 
+ * 7 weather station... 9r - 9q - 9mg 9mu 9mv 9my 9mz hashcodes cover these placess....
+ * Bodega Bay CA        -> 38.32, -123.07
+ * Fallbrook  CA        -> 33.44 -117.19 
+ * Merced     CA        -> 37.24 -120.88
+ * Redding    CA        -> 40.65 -122.61
+ * Santa Barbara CA     -> 34.41 -119.88    
+ * Stovepipe Wells CA   -> 36.60  -117.14
+ * Yosemite Village CA  -> 37.76 -119.82   
+ *   
+ * and may be 2 states of nevada...
  */
-public class ClimateChartJob {
+
+public class EarthQuakeClimateAnaysisJob {
 
     public static void main(String[] args) {
         try {
             Configuration conf = new Configuration();
 
-            /**
-             * This is our Configuration Manager...
-             */
-            ConfigManager.getInstance();
-
             //Delete existing output folder first.
             Utils.deleteDirectory(new File(args[1]));
 
             /* Job Name. You'll see this in the YARN webapp */
-            Job job = Job.getInstance(conf, "Hiep-Alper-Project2-Climate-Chart Job");
+            Job job = Job.getInstance(conf, "Hiep-Alper-Project2-Earth Quake Job");
 
             /* Current class */
-            job.setJarByClass(ClimateChartJob.class);
+            job.setJarByClass(EarthQuakeClimateAnaysisJob.class);
 
             /* Mapper class */
-            job.setMapperClass(ClimateChartMapper.class);
+            job.setMapperClass(EarthQuakeClimateMapper.class);
 
             /* Outputs from the Mapper. */
-            job.setMapOutputKeyClass(RegionMonthWritable.class);
-            job.setMapOutputValueClass(TemperaturePrecipWritable.class);
+            job.setMapOutputKeyClass(IntWritable.class);
+            job.setMapOutputValueClass(WetnessWritable.class);
 
             /* Combiner class. Combiners are run between the Map and Reduce
              * phases to reduce the amount of output that must be transmitted.
@@ -61,11 +70,11 @@ public class ClimateChartJob {
             //job.setCombinerClass(WordCountReducer.class);
             
             /* Reducer class */
-            job.setReducerClass(ClimateChartReducer.class);
+            job.setReducerClass(EarthQuakeClimateReducer.class);
 
             /* Outputs from the Reducer */
-            job.setOutputKeyClass(IntWritable.class); //month
-            job.setOutputValueClass(ClimateChartWritable.class); //temperature,precipitation,minAirTemp,maxAirTemp
+            job.setOutputKeyClass(IntWritable.class);
+            job.setOutputValueClass(WetnessWritable.class);
 
             /* Reduce tasks */
             job.setNumReduceTasks(1);

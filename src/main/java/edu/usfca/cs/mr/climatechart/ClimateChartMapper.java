@@ -10,6 +10,7 @@ import org.apache.hadoop.mapreduce.Mapper;
 import edu.usfca.cs.mr.climatechart.model.RegionMonthWritable;
 import edu.usfca.cs.mr.climatechart.model.TemperaturePrecipWritable;
 import edu.usfca.cs.mr.config.ConfigManager;
+import edu.usfca.cs.mr.constants.Constants;
 import edu.usfca.cs.mr.constants.NcdcConstants;
 import edu.usfca.cs.mr.util.GeoHashHelper;
 import edu.usfca.cs.mr.util.Utils;
@@ -58,7 +59,8 @@ public class ClimateChartMapper
             if (GeoHashHelper
                     .isChoosenRegion(ConfigManager.getInstance().getClimateChartRegionGeoHash(),
                                      Double.valueOf(values[NcdcConstants.LONGITUDE]),
-                                     Double.valueOf(values[NcdcConstants.LATITUDE]))) {
+                                     Double.valueOf(values[NcdcConstants.LATITUDE]),
+                                     Constants.GEO_HASH_PRECISION_FOR_CLIMATE_CHART_4)) {
                 regionName = GeoHashHelper
                         .returnRegionName(Double.valueOf(values[NcdcConstants.LONGITUDE]),
                                           Double.valueOf(values[NcdcConstants.LATITUDE]));

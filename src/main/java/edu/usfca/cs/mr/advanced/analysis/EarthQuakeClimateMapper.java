@@ -1,4 +1,4 @@
-package edu.usfca.cs.mr.drying;
+package edu.usfca.cs.mr.advanced.analysis;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -30,7 +30,8 @@ import edu.usfca.cs.mr.util.Utils;
  * 3rd : key output
  * 4th: value of output 
  */
-public class WetnessMapper extends Mapper<LongWritable, Text, IntWritable, WetnessWritable> {
+public class EarthQuakeClimateMapper
+        extends Mapper<LongWritable, Text, IntWritable, WetnessWritable> {
 
     /**
      * 
@@ -57,16 +58,18 @@ public class WetnessMapper extends Mapper<LongWritable, Text, IntWritable, Wetne
             /**
              * Choose a region in North America (defined by Geohash, which may include several weather stations)
              */
-            if (GeoHashHelper.isChoosenRegion(Constants.GEO_HASH_SANTA_BARBARA,
-                                              Double.valueOf(values[NcdcConstants.LONGITUDE]),
-                                              Double.valueOf(values[NcdcConstants.LATITUDE]),
-                                              Constants.GEO_HASH_PRECISION_FOR_WETNESS_4)) {
+            if (GeoHashHelper
+                    .isInEarthQuakeRegion(Double.valueOf(values[NcdcConstants.LONGITUDE]),
+                                          Double.valueOf(values[NcdcConstants.LATITUDE]))) {
                 /**
                  * Find the month first from UTC_DATE!
                  */
                 String dateString = String.valueOf(values[NcdcConstants.UTC_DATE]);
                 month = Utils.getMonth(dateString);
                 checkWetness = true;
+                System.out.println("YES! Earth Quake Region:"
+                        + Double.valueOf(values[NcdcConstants.LONGITUDE] + ","
+                                + Double.valueOf(values[NcdcConstants.LATITUDE])));
             }
         }
 
