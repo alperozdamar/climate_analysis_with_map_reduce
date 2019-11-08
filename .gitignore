@@ -210,6 +210,7 @@ output/*
 movingOutOutput/*
 solarWindOutput/*
 extremesOutput/*
+correlationOutput/*
 2012/*
 2018/*
 2019/*
