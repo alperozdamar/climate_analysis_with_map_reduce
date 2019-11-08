@@ -59,7 +59,8 @@ public class WetnessMapper extends Mapper<LongWritable, Text, IntWritable, Wetne
              */
             if (GeoHashHelper.isChoosenRegion(Constants.GEO_HASH_SANTA_BARBARA,
                                               Double.valueOf(values[NcdcConstants.LONGITUDE]),
-                                              Double.valueOf(values[NcdcConstants.LATITUDE]))) {
+                                              Double.valueOf(values[NcdcConstants.LATITUDE]),
+                                              Constants.GEO_HASH_PRECISION_FOR_WETNESS_4)) {
                 /**
                  * Find the month first from UTC_DATE!
                  */
@@ -90,7 +91,7 @@ public class WetnessMapper extends Mapper<LongWritable, Text, IntWritable, Wetne
         float longtitude = -119.88f;
         float latitude = 34.41f;
 
-        GeoHashHelper.isChoosenRegion(Constants.GEO_HASH_SANTA_BARBARA, longtitude, latitude);
+        GeoHashHelper.isChoosenRegion(Constants.GEO_HASH_SANTA_BARBARA, longtitude, latitude, 4);
     }
 
     private HashMap<Integer, Integer> initializeHashMap() {

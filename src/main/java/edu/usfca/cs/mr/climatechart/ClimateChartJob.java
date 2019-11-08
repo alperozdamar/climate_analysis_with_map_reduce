@@ -16,17 +16,14 @@ import edu.usfca.cs.mr.config.ConfigManager;
 import edu.usfca.cs.mr.util.Utils;
 
 /**
- * QUESTION-4:
+ * QUESTION-6:
+ * Climate Chart: Given a Geohash prefix, create a climate chart for the region. 
+ * This includes high, low, and average temperatures, as well as monthly average 
+ * rainfall (precipitation). Here’s a (poor quality) script that will generate 
+ * this for you.
  * 
- * Travel Startup: After graduating from USF, you found a startup that aims to 
- * provide personalized travel itineraries using big data analysis. Given your own 
- * personal preferences, build a plan for a year of travel across 5 locations. Or, 
- * in other words: pick 5 regions. What is the best time of year to visit them based 
- * on the dataset? 
- * 
- * Part of your answer should include the comfort index for a region. There are several
- * different ways of calculating this available online. Note: you don’t need to use 
- * this for choosing the regions, though.
+ * Earn up to 1 point of extra credit for enhancing/improving this chart (or 
+ * porting it to a more feature-rich visualization library)
  */
 public class ClimateChartJob {
 
@@ -68,7 +65,7 @@ public class ClimateChartJob {
 
             /* Outputs from the Reducer */
             job.setOutputKeyClass(IntWritable.class); //month
-            job.setOutputValueClass(ClimateChartWritable.class); //temperature,precipitation
+            job.setOutputValueClass(ClimateChartWritable.class); //temperature,precipitation,minAirTemp,maxAirTemp
 
             /* Reduce tasks */
             job.setNumReduceTasks(1);

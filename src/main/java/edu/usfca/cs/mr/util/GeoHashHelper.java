@@ -1,8 +1,12 @@
 package edu.usfca.cs.mr.util;
 
+import java.util.HashMap;
+
 import edu.usfca.cs.mr.constants.Constants;
 
 public class GeoHashHelper {
+
+    public static HashMap<String, String> testEarthQuakeHashMap = new HashMap<>();
 
     public static String returnRegionName(double longitude, double latitude) {
 
@@ -26,17 +30,44 @@ public class GeoHashHelper {
     }
 
     //Santa Barbara: longtitude:-119.88   latitude:34.41 
-    public static boolean isChoosenRegion(String choosenRegion, double longitude, double latitude) {
+    public static boolean isChoosenRegion(String choosenRegion, double longitude, double latitude,
+                                          int precision) {
         /**
          * TODO:
          * Use GeoHash Algorithm...
          */
         //SANTA-BARBARA... 9q4g
-        String value = Geohash.encode((float) latitude, (float) longitude, 4);
+        String value = Geohash.encode((float) latitude, (float) longitude, precision);
         //System.out.println("value:" + value);
 
         if (value.equalsIgnoreCase(choosenRegion)) {
             //System.out.println("This is Santa Barbara! Heyyoo!!");
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public static boolean isInEarthQuakeRegion(double longitude, double latitude) {
+        if ( //isChoosenRegion(Constants.GEO_HASH_EARTQUAKE_PART_1, longitude, latitude, 2)
+        isChoosenRegion(Constants.GEO_HASH_EARTQUAKE_PART_2, longitude, latitude, 2))
+        //|| isChoosenRegion(Constants.GEO_HASH_EARTQUAKE_PART_3_1, longitude, latitude, 2)
+        //|| isChoosenRegion(Constants.GEO_HASH_EARTQUAKE_PART_3_2, longitude, latitude, 3)
+        //|| isChoosenRegion(Constants.GEO_HASH_EARTQUAKE_PART_3_3, longitude, latitude, 3)
+        //|| isChoosenRegion(Constants.GEO_HASH_EARTQUAKE_PART_3_4, longitude, latitude, 3)
+        //|| isChoosenRegion(Constants.GEO_HASH_EARTQUAKE_PART_3_5, longitude, latitude, 3)) {
+        {
+            String value = Geohash.encode((float) latitude, (float) longitude, 3);
+            /**
+             * Exclude 9qy and 9qt for Earthquake analysis..
+             */
+            if (value.equals(Constants.GEO_HASH_EARTQUAKE_EXCLUDE_2_1)
+                    || value.equalsIgnoreCase(Constants.GEO_HASH_EARTQUAKE_EXCLUDE_2_2)) {
+                return false;
+            }
+            //System.out.println("YES! Earth Quake Region:" + latitude + " " + longitude);
+            testEarthQuakeHashMap.put("" + latitude + " " + longitude,
+                                      "" + latitude + " " + longitude);
             return true;
         } else {
             return false;
