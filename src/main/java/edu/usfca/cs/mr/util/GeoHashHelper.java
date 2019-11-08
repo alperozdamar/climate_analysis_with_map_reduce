@@ -33,7 +33,7 @@ public class GeoHashHelper {
          * Use GeoHash Algorithm...
          */
         //SANTA-BARBARA... 9q4g
-        String value = Geohash.encode((float) latitude, (float) longitude, 4);
+        String value = Geohash.encode((float) latitude, (float) longitude, precision);
         //System.out.println("value:" + value);
 
         if (value.equalsIgnoreCase(choosenRegion)) {
