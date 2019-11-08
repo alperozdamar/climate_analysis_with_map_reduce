@@ -33,45 +33,49 @@ public class EarthQuakeClimateMapper
     @Override
     protected void map(LongWritable key, Text value, Context context)
             throws IOException, InterruptedException {
-        // tokenize into words.
-        String[] values = value.toString().split("[ ]+");
+        try {
+            // tokenize into words.
+            String[] values = value.toString().split("[ ]+");
 
-        double soilMoisture = Double.valueOf(values[NcdcConstants.SOIL_MOISTURE]);
-        double soilTemp = Double.valueOf(values[NcdcConstants.SOIL_TEMPERATURE_5]);
-        double surfaceTemp = Double.valueOf(values[NcdcConstants.SURFACE_TEMPERATURE]);
+            double soilMoisture = Double.valueOf(values[NcdcConstants.SOIL_MOISTURE]);
+            double soilTemp = Double.valueOf(values[NcdcConstants.SOIL_TEMPERATURE_5]);
+            double surfaceTemp = Double.valueOf(values[NcdcConstants.SURFACE_TEMPERATURE]);
 
-        //Only write value that is denotes corrected and good data.        
-        boolean checkData = false;
-        int year = -1;
+            //Only write value that is denotes corrected and good data.        
+            boolean checkData = false;
+            int year = -1;
 
-        if (checkValidSoilMoisture(soilMoisture) && checkValidTemperature(soilTemp)
-                && checkValidTemperature(surfaceTemp)) {
+            if (checkValidSoilMoisture(soilMoisture) && checkValidTemperature(soilTemp)
+                    && checkValidTemperature(surfaceTemp)) {
 
-            /**
-             * Choose a region in North America (defined by Geohash, which may include several weather stations)
-             */
-            if (GeoHashHelper
-                    .isInEarthQuakeRegion(Double.valueOf(values[NcdcConstants.LONGITUDE]),
-                                          Double.valueOf(values[NcdcConstants.LATITUDE]))) {
                 /**
-                 * Find the month first from UTC_DATE!
+                 * Choose a region in North America (defined by Geohash, which may include several weather stations)
                  */
-                String dateString = String.valueOf(values[NcdcConstants.UTC_DATE]);
-                Calendar cal = Utils.getCalendar(dateString);
-                year = cal.get(Calendar.YEAR);
-                checkData = true;
-
+                if (GeoHashHelper
+                        .isInEarthQuakeRegion(Double.valueOf(values[NcdcConstants.LONGITUDE]),
+                                              Double.valueOf(values[NcdcConstants.LATITUDE]))) {
+                    /**
+                     * Find the month first from UTC_DATE!
+                     */
+                    String dateString = String.valueOf(values[NcdcConstants.UTC_DATE]);
+                    Calendar cal = Utils.getCalendar(dateString);
+                    year = cal.get(Calendar.YEAR);
+                    checkData = true;
+                }
             }
-        }
 
-        if (checkData) {
-            /**
-             * Define Writables...
-             */
-            EarthQuakeWritable earthQuakeWritable = new EarthQuakeWritable(soilMoisture,
-                                                                           soilTemp,
-                                                                           surfaceTemp);
-            context.write(new IntWritable(year), earthQuakeWritable);
+            if (checkData) {
+                /**
+                 * Define Writables...
+                 */
+                EarthQuakeWritable earthQuakeWritable = new EarthQuakeWritable(soilMoisture,
+                                                                               soilTemp,
+                                                                               surfaceTemp);
+                context.write(new IntWritable(year), earthQuakeWritable);
+            }
+        } catch (Exception e) {
+            System.err.println("Exception occured while reading data:" + value);
+            e.printStackTrace();
         }
     }
 
