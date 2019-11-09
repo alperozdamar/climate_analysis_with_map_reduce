@@ -39,43 +39,48 @@ public class WetnessMapper extends Mapper<LongWritable, Text, IntWritable, Wetne
     @Override
     protected void map(LongWritable key, Text value, Context context)
             throws IOException, InterruptedException {
-        // tokenize into words.
-        String[] values = value.toString().split("[ ]+");
+        try {
+            // tokenize into words.
+            String[] values = value.toString().split("[ ]+");
 
-        int wetness = Integer.valueOf(values[NcdcConstants.WETNESS]);
-        String wetnessFlag = values[NcdcConstants.WET_FLAG];
+            int wetness = Integer.valueOf(values[NcdcConstants.WETNESS]);
+            String wetnessFlag = values[NcdcConstants.WET_FLAG];
 
-        if (!wetnessFlag.equals("0")) {
-            wetness = NcdcConstants.EXTREME_WET;
-        }
-        //Only write value that is denotes corrected and good data.        
-        boolean checkWetness = false;
-        int month = -1;
-
-        if (checkValidWetness(wetness)) {
-
-            /**
-             * Choose a region in North America (defined by Geohash, which may include several weather stations)
-             */
-            if (GeoHashHelper.isChoosenRegion(Constants.GEO_HASH_SANTA_BARBARA,
-                                              Double.valueOf(values[NcdcConstants.LONGITUDE]),
-                                              Double.valueOf(values[NcdcConstants.LATITUDE]),
-                                              Constants.GEO_HASH_PRECISION_FOR_WETNESS_4)) {
-                /**
-                 * Find the month first from UTC_DATE!
-                 */
-                String dateString = String.valueOf(values[NcdcConstants.UTC_DATE]);
-                month = Utils.getMonth(dateString);
-                checkWetness = true;
+            if (!wetnessFlag.equals("0")) {
+                wetness = NcdcConstants.EXTREME_WET;
             }
-        }
+            //Only write value that is denotes corrected and good data.        
+            boolean checkWetness = false;
+            int month = -1;
 
-        if (checkWetness) {
-            /**
-             * Define Writables...
-             */
-            WetnessWritable wetnessWritable = new WetnessWritable(wetness);
-            context.write(new IntWritable(month), wetnessWritable);
+            if (checkValidWetness(wetness)) {
+
+                /**
+                 * Choose a region in North America (defined by Geohash, which may include several weather stations)
+                 */
+                if (GeoHashHelper.isChoosenRegion(Constants.GEO_HASH_SANTA_BARBARA,
+                                                  Double.valueOf(values[NcdcConstants.LONGITUDE]),
+                                                  Double.valueOf(values[NcdcConstants.LATITUDE]),
+                                                  Constants.GEO_HASH_PRECISION_FOR_WETNESS_4)) {
+                    /**
+                     * Find the month first from UTC_DATE!
+                     */
+                    String dateString = String.valueOf(values[NcdcConstants.UTC_DATE]);
+                    month = Utils.getMonth(dateString);
+                    checkWetness = true;
+                }
+            }
+
+            if (checkWetness) {
+                /**
+                 * Define Writables...
+                 */
+                WetnessWritable wetnessWritable = new WetnessWritable(wetness);
+                context.write(new IntWritable(month), wetnessWritable);
+            }
+        } catch (Exception e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
         }
     }
 

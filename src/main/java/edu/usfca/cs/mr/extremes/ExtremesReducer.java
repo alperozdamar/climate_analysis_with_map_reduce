@@ -37,39 +37,44 @@ public class ExtremesReducer extends
     protected void reduce(TemperatureWritable key, Iterable<LocationTimeWritable> values,
                           Context context)
             throws IOException, InterruptedException {
-        // calculate the total count
-        ArrayList<LocationTimeWritable> locations = new ArrayList<>();
-        for (LocationTimeWritable locationTime : values) {
-            locations.add(new LocationTimeWritable(locationTime.getLocation().toString(),
-                                                   locationTime.getUtcDate().toString(),
-                                                   locationTime.getUtcTime().toString()));
-        }
-        if (checkValidTemp(key.getAirTemp())) {
-            if (key.getAirTemp().compareTo(minAirTemp) < 0) {
-                minAirTemp.set(key.getAirTemp().get());
-                minAirLocations = new ArrayList<>();
-                minAirLocations = (ArrayList) locations.clone();
+        try {
+            // calculate the total count
+            ArrayList<LocationTimeWritable> locations = new ArrayList<>();
+            for (LocationTimeWritable locationTime : values) {
+                locations.add(new LocationTimeWritable(locationTime.getLocation().toString(),
+                                                       locationTime.getUtcDate().toString(),
+                                                       locationTime.getUtcTime().toString()));
+            }
+            if (checkValidTemp(key.getAirTemp())) {
+                if (key.getAirTemp().compareTo(minAirTemp) < 0) {
+                    minAirTemp.set(key.getAirTemp().get());
+                    minAirLocations = new ArrayList<>();
+                    minAirLocations = (ArrayList) locations.clone();
+                }
+
+                if (key.getAirTemp().compareTo(maxAirTemp) > 0) {
+                    maxAirTemp.set(key.getAirTemp().get());
+                    maxAirLocations = new ArrayList<>();
+                    maxAirLocations = (ArrayList) locations.clone();
+                }
             }
 
-            if (key.getAirTemp().compareTo(maxAirTemp) > 0) {
-                maxAirTemp.set(key.getAirTemp().get());
-                maxAirLocations = new ArrayList<>();
-                maxAirLocations = (ArrayList) locations.clone();
-            }
-        }
+            if (checkValidTemp(key.getSurfaceTemp())) {
+                if (key.getSurfaceTemp().compareTo(minSurfaceTemp) < 0) {
+                    minSurfaceTemp.set(key.getSurfaceTemp().get());
+                    minSurfaceLocations = new ArrayList<>();
+                    minSurfaceLocations = (ArrayList) locations.clone();
+                }
 
-        if (checkValidTemp(key.getSurfaceTemp())) {
-            if (key.getSurfaceTemp().compareTo(minSurfaceTemp) < 0) {
-                minSurfaceTemp.set(key.getSurfaceTemp().get());
-                minSurfaceLocations = new ArrayList<>();
-                minSurfaceLocations = (ArrayList) locations.clone();
+                if (key.getSurfaceTemp().compareTo(maxSurfaceTemp) > 0) {
+                    maxSurfaceTemp.set(key.getSurfaceTemp().get());
+                    maxSurfaceLocations = new ArrayList<>();
+                    maxSurfaceLocations = (ArrayList) locations.clone();
+                }
             }
-
-            if (key.getSurfaceTemp().compareTo(maxSurfaceTemp) > 0) {
-                maxSurfaceTemp.set(key.getSurfaceTemp().get());
-                maxSurfaceLocations = new ArrayList<>();
-                maxSurfaceLocations = (ArrayList) locations.clone();
-            }
+        } catch (Exception e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
         }
     }
 

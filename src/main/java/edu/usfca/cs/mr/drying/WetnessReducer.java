@@ -47,34 +47,39 @@ public class WetnessReducer
     protected void reduce(IntWritable key, Iterable<WetnessWritable> values, Context context)
             throws IOException, InterruptedException {
 
-        //OUR KEY is Month...
-        int month = key.get();
-        int dataCountForMonth = 0;
-        int averageWetness = 0; //May double it!!! I think no need for now.
+        try {
+            //OUR KEY is Month...
+            int month = key.get();
+            int dataCountForMonth = 0;
+            int averageWetness = 0; //May double it!!! I think no need for now.
 
-        // calculate         
-        for (WetnessWritable wetness : values) {
-            if (checkValidWetness(wetness.getWetness())) {
-                dataCountForMonth++;
-                int wetnessIntValue = wetness.getWetness().get();
-                averageWetness = averageWetness + wetnessIntValue;
+            // calculate         
+            for (WetnessWritable wetness : values) {
+                if (checkValidWetness(wetness.getWetness())) {
+                    dataCountForMonth++;
+                    int wetnessIntValue = wetness.getWetness().get();
+                    averageWetness = averageWetness + wetnessIntValue;
+                }
             }
-        }
-        averageWetness = averageWetness / dataCountForMonth;
+            averageWetness = averageWetness / dataCountForMonth;
 
-        if (month == 0) {
-            System.out.println("Month 1 average is " + averageWetness);
-        }
+            if (month == 0) {
+                System.out.println("Month 1 average is " + averageWetness);
+            }
 
-        if (month == 1) {
-            System.out.println("Month 2 average is " + averageWetness);
-        }
+            if (month == 1) {
+                System.out.println("Month 2 average is " + averageWetness);
+            }
 
-        if (month == 2) {
-            System.out.println("Month 3 average is " + averageWetness);
-        }
+            if (month == 2) {
+                System.out.println("Month 3 average is " + averageWetness);
+            }
 
-        monthToAverageWetness.put(month, averageWetness);
+            monthToAverageWetness.put(month, averageWetness);
+        } catch (Exception e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
     }
 
     /**
