@@ -40,50 +40,56 @@ public class ClimateChartMapper
     @Override
     protected void map(LongWritable key, Text value, Context context)
             throws IOException, InterruptedException {
-        // tokenize into words.
-        String[] values = value.toString().split("[ ]+");
+        try {
+            // tokenize into words.
+            String[] values = value.toString().split("[ ]+");
 
-        double airTemperature = Double.valueOf(values[NcdcConstants.AIR_TEMPERATURE]);
-        double precipitation = Double.valueOf(values[NcdcConstants.PRECIPITATION]);
+            double airTemperature = Double.valueOf(values[NcdcConstants.AIR_TEMPERATURE]);
+            double precipitation = Double.valueOf(values[NcdcConstants.PRECIPITATION]);
 
-        String dateString = String.valueOf(values[NcdcConstants.UTC_DATE]);
-        String regionName = null;
-        /**
-         * Find the month first from UTC_DATE!
-         */
-        int month = -1;
-
-        //Only write value that is denotes corrected and good data.        
-        boolean check = false;
-        if (checkValidAirTemperature(airTemperature) && checkValidPrecipitation(precipitation)) {
-            if (GeoHashHelper
-                    .isChoosenRegion(ConfigManager.getInstance().getClimateChartRegionGeoHash(),
-                                     Double.valueOf(values[NcdcConstants.LONGITUDE]),
-                                     Double.valueOf(values[NcdcConstants.LATITUDE]),
-                                     Constants.GEO_HASH_PRECISION_FOR_CLIMATE_CHART_4)) {
-                regionName = GeoHashHelper
-                        .returnRegionName(Double.valueOf(values[NcdcConstants.LONGITUDE]),
-                                          Double.valueOf(values[NcdcConstants.LATITUDE]));
-                /**
-                 * Find the month first from UTC_DATE!
-                 */
-                month = Utils.getMonth(dateString);
-
-                check = true;
-            }
-        }
-
-        if (check) {
+            String dateString = String.valueOf(values[NcdcConstants.UTC_DATE]);
+            String regionName = null;
             /**
-             * Define Writables...
+             * Find the month first from UTC_DATE!
              */
-            TemperaturePrecipWritable temperaturePrecipWritable = new TemperaturePrecipWritable(airTemperature,
-                                                                                                precipitation);
+            int month = -1;
 
-            RegionMonthWritable regionMonthWritable = new RegionMonthWritable(new Text(regionName),
-                                                                              new IntWritable(month));
+            //Only write value that is denotes corrected and good data.        
+            boolean check = false;
+            if (checkValidAirTemperature(airTemperature)
+                    && checkValidPrecipitation(precipitation)) {
+                if (GeoHashHelper
+                        .isChoosenRegion(ConfigManager.getInstance().getClimateChartRegionGeoHash(),
+                                         Double.valueOf(values[NcdcConstants.LONGITUDE]),
+                                         Double.valueOf(values[NcdcConstants.LATITUDE]),
+                                         Constants.GEO_HASH_PRECISION_FOR_CLIMATE_CHART_4)) {
+                    regionName = GeoHashHelper
+                            .returnRegionName(Double.valueOf(values[NcdcConstants.LONGITUDE]),
+                                              Double.valueOf(values[NcdcConstants.LATITUDE]));
+                    /**
+                     * Find the month first from UTC_DATE!
+                     */
+                    month = Utils.getMonth(dateString);
 
-            context.write(regionMonthWritable, temperaturePrecipWritable);
+                    check = true;
+                }
+            }
+
+            if (check) {
+                /**
+                 * Define Writables...
+                 */
+                TemperaturePrecipWritable temperaturePrecipWritable = new TemperaturePrecipWritable(airTemperature,
+                                                                                                    precipitation);
+
+                RegionMonthWritable regionMonthWritable = new RegionMonthWritable(new Text(regionName),
+                                                                                  new IntWritable(month));
+
+                context.write(regionMonthWritable, temperaturePrecipWritable);
+            }
+        } catch (Exception e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
         }
     }
 

@@ -36,45 +36,50 @@ public class ClimateChartReducer extends
                           Context context)
             throws IOException, InterruptedException {
 
-        double maxAirTemp = Double.MIN_VALUE;
-        double minAirTemp = Double.MAX_VALUE;
+        try {
+            double maxAirTemp = Double.MIN_VALUE;
+            double minAirTemp = Double.MAX_VALUE;
 
-        int month = key.getMonth().get();
-        String regionName = key.getRegionName().toString();
-        System.out.println("month:" + month);
-        System.out.println("regionName:" + regionName);
-        int dataCountForMonth = 0;
-        double averageAirTemp = 0;
-        double averagePrecipitation = 0;
-        // calculate         
-        for (TemperaturePrecipWritable climate : values) {
-            dataCountForMonth++;
-            double airTemp = climate.getAirTemp().get();
-            double precipitation = climate.getPrecipitation().get();
-            averageAirTemp = averageAirTemp + airTemp;
-            averagePrecipitation = averagePrecipitation + precipitation;
-            if (airTemp < minAirTemp) {
-                minAirTemp = airTemp;
+            int month = key.getMonth().get();
+            String regionName = key.getRegionName().toString();
+            System.out.println("month:" + month);
+            System.out.println("regionName:" + regionName);
+            int dataCountForMonth = 0;
+            double averageAirTemp = 0;
+            double averagePrecipitation = 0;
+            // calculate         
+            for (TemperaturePrecipWritable climate : values) {
+                dataCountForMonth++;
+                double airTemp = climate.getAirTemp().get();
+                double precipitation = climate.getPrecipitation().get();
+                averageAirTemp = averageAirTemp + airTemp;
+                averagePrecipitation = averagePrecipitation + precipitation;
+                if (airTemp < minAirTemp) {
+                    minAirTemp = airTemp;
+                }
+                if (airTemp > maxAirTemp) {
+                    maxAirTemp = airTemp;
+                }
             }
-            if (airTemp > maxAirTemp) {
-                maxAirTemp = airTemp;
-            }
+            averageAirTemp = averageAirTemp / dataCountForMonth;
+            averagePrecipitation = averagePrecipitation / dataCountForMonth;
+            //format Sample: 18.50
+            averageAirTemp = Math.round(averageAirTemp * 100.0) / 100.0;
+
+            averagePrecipitation = Double.parseDouble(String.format("%.5f", averagePrecipitation));
+
+            System.out.println(averageAirTemp + "," + averagePrecipitation + "," + minAirTemp + ","
+                    + maxAirTemp);
+
+            context.write(new IntWritable(month),
+                          new ClimateChartWritable(averageAirTemp,
+                                                   averagePrecipitation,
+                                                   minAirTemp,
+                                                   maxAirTemp));
+        } catch (Exception e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
         }
-        averageAirTemp = averageAirTemp / dataCountForMonth;
-        averagePrecipitation = averagePrecipitation / dataCountForMonth;
-        //format Sample: 18.50
-        averageAirTemp = Math.round(averageAirTemp * 100.0) / 100.0;
-
-        averagePrecipitation = Double.parseDouble(String.format("%.5f", averagePrecipitation));
-
-        System.out.println(averageAirTemp + "," + averagePrecipitation + "," + minAirTemp + ","
-                + maxAirTemp);
-
-        context.write(new IntWritable(month),
-                      new ClimateChartWritable(averageAirTemp,
-                                               averagePrecipitation,
-                                               minAirTemp,
-                                               maxAirTemp));
     }
 
 }
