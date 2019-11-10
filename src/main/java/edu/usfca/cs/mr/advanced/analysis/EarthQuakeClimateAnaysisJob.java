@@ -42,8 +42,8 @@ import edu.usfca.cs.mr.util.Utils;
             Location:37.24 -120.88
             Location:34.41 -119.88
             Location:38.32 -123.07
-            Location:36.6 -117.14
-            Location:37.76 -119.82
+            Location:36.6 -117.14 (Death Valley National Park)
+            Location:37.76 -119.82 ()
  *
  */
 public class EarthQuakeClimateAnaysisJob {

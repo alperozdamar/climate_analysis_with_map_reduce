@@ -57,7 +57,7 @@ public class Constants {
         String value = Geohash.encode((float) latitude, (float) longitude, 4);
         System.out.println(Geohash.decodeHash("yuex").getCenterPoint());
 
-//        System.out.println(value);
+        //        System.out.println(value);
 
     }
 

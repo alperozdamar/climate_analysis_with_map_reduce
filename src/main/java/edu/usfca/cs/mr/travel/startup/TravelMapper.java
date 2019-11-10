@@ -41,54 +41,54 @@ public class TravelMapper extends Mapper<LongWritable, Text, TravelWritable, Dou
     @Override
     protected void map(LongWritable key, Text value, Context context)
             throws IOException, InterruptedException {
-        // tokenize into words.
-        String[] values = value.toString().split("[ ]+");
-
-        double airTemperature = Double.valueOf(values[NcdcConstants.AIR_TEMPERATURE]);
-        int relativeHumidity = Integer.valueOf(values[NcdcConstants.RELATIVE_HUMIDITY]);
-        String dateString = String.valueOf(values[NcdcConstants.UTC_DATE]);
-        double comfortIndex = -1;
-        String regionName = "UNKNOWN";
-
-        /**
-         * Find the month first from UTC_DATE!
-         */
-        int month = Utils.getMonth(dateString);
-
-        //Only write value that is denotes corrected and good data.        
-        boolean checkComfortIndex = false;
-
-        if (checkValidAirTemperature(airTemperature)
-                && checkValidRelativeHumidity(relativeHumidity)) {
-            checkComfortIndex = true;
-            comfortIndex = (airTemperature + relativeHumidity) / 40;
-
-            System.out.println("ComfortIndex:" + comfortIndex);
-
-            regionName = GeoHashHelper
-                    .returnRegionName(Double.valueOf(values[NcdcConstants.LONGITUDE]),
-                                      Double.valueOf(values[NcdcConstants.LATITUDE]));
-
-            System.out.println("RegionName:" + regionName);
-
-        }
-
-        if (checkComfortIndex) {
+        try {
+            // tokenize into words.
+            String[] values = value.toString().split("[ ]+");
+            double airTemperature = Double.valueOf(values[NcdcConstants.AIR_TEMPERATURE]);
+            int relativeHumidity = Integer.valueOf(values[NcdcConstants.RELATIVE_HUMIDITY]);
+            int rhFlag = Integer.valueOf(values[NcdcConstants.RH_FLAG]);
+            String dateString = String.valueOf(values[NcdcConstants.UTC_DATE]);
+            double comfortIndex = -1;
+            String regionName = "UNKNOWN";
             /**
-             * Define Writables...
+             * Find the month first from UTC_DATE!
              */
-            TravelWritable TravelWritable = new TravelWritable(new Text(regionName),
-                                                               new IntWritable(month));
-            context.write(TravelWritable, new DoubleWritable(comfortIndex));
+            int month = Utils.getMonth(dateString);
+            //Only write value that is denotes corrected and good data.        
+            boolean checkComfortIndex = false;
+            if (rhFlag == 0 && checkValidAirTemperature(airTemperature)
+                    && checkValidRelativeHumidity(relativeHumidity)) {
+                checkComfortIndex = true;
+                comfortIndex = (airTemperature + relativeHumidity) / 40;
+                // System.out.println("ComfortIndex:" + comfortIndex);
+                regionName = GeoHashHelper
+                        .returnRegionName(Double.valueOf(values[NcdcConstants.LONGITUDE]),
+                                          Double.valueOf(values[NcdcConstants.LATITUDE]));
+                //   System.out.println("RegionName:" + regionName);
+                if (regionName.equalsIgnoreCase("UNKNOWN")) {
+                    checkComfortIndex = false;
+                }
+            }
+            if (checkComfortIndex) {
+                /**
+                 * Define Writables...
+                 */
+                TravelWritable TravelWritable = new TravelWritable(new Text(regionName),
+                                                                   new IntWritable(month));
+                context.write(TravelWritable, new DoubleWritable(comfortIndex));
+            }
+        } catch (Exception e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
         }
     }
 
     private boolean checkValidAirTemperature(double airTemperature) {
-        if (airTemperature == NcdcConstants.EXTREME_TEMP_HIGH
-                || airTemperature == NcdcConstants.EXTREME_TEMP_LOW) {
-            return false;
+        if (airTemperature < NcdcConstants.EXTREME_TEMP_HIGH
+                && airTemperature > NcdcConstants.EXTREME_TEMP_LOW) {
+            return true;
         }
-        return true;
+        return false;
     }
 
     private boolean checkValidRelativeHumidity(int relativeHumidity) {

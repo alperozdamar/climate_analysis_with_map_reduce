@@ -37,36 +37,31 @@ public class TravelReducer
     protected void reduce(TravelWritable key, Iterable<DoubleWritable> values, Context context)
             throws IOException, InterruptedException {
 
-        int month = key.getMonth().get();
-        String regionName = key.getRegionName().toString();
+        try {
+            int month = key.getMonth().get();
+            String regionName = key.getRegionName().toString();
 
-        System.out.println("month:" + month);
-        System.out.println("regionName:" + regionName);
+            //System.out.println("month:" + month);
+            //System.out.println("regionName:" + regionName);
 
-        int dataCountForMonth = 0;
-        double averageComfortIndex = 0;
+            int dataCountForMonth = 0;
+            double averageComfortIndex = 0;
 
-        // calculate         
-        for (DoubleWritable comfortIndex : values) {
-            dataCountForMonth++;
-            double comfortIndexIntValue = comfortIndex.get();
-            averageComfortIndex = averageComfortIndex + comfortIndexIntValue;
+            // calculate         
+            for (DoubleWritable comfortIndex : values) {
+                dataCountForMonth++;
+                double comfortIndexIntValue = comfortIndex.get();
+                averageComfortIndex = averageComfortIndex + comfortIndexIntValue;
+            }
+            averageComfortIndex = averageComfortIndex / dataCountForMonth;
+
+            averageComfortIndex = Math.round(averageComfortIndex * 100.0) / 100.0;
+
+            context.write(key, new DoubleWritable(averageComfortIndex));
+        } catch (Exception e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
         }
-        averageComfortIndex = averageComfortIndex / dataCountForMonth;
-
-        if (month == 0) {
-            System.out.println("" + regionName + ",January average is " + averageComfortIndex);
-        }
-        if (month == 1) {
-            System.out.println("" + regionName + ",February average is " + averageComfortIndex);
-        }
-        if (month == 2) {
-            System.out.println("" + regionName + ",March average is " + averageComfortIndex);
-        }
-
-        averageComfortIndex = Math.round(averageComfortIndex * 100.0) / 100.0;
-
-        context.write(key, new DoubleWritable(averageComfortIndex));
     }
 
 }
