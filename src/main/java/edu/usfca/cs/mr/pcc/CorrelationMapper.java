@@ -33,7 +33,8 @@ public class CorrelationMapper extends Mapper<LongWritable, Text, Text, RunningS
             String location = Geohash.encode(Float.valueOf(values[NcdcConstants.LATITUDE]),
                     Float.valueOf(values[NcdcConstants.LONGITUDE]),
                     Constants.GEO_HASH_PRECISION);
-            context.write(new Text(location), new RunningStatisticsND(new double[]{lat, lon, temperature, humidity, wetness, wind}));
+//            context.write(new Text(location), new RunningStatisticsND(new double[]{lat, lon, temperature, humidity, wetness, wind}));
+            context.write(new Text(location), new RunningStatisticsND(new double[]{temperature, humidity, wetness}));
         }
     }
 }

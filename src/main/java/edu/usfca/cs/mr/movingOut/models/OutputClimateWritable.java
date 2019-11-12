@@ -16,6 +16,8 @@ public class OutputClimateWritable implements Writable {
     private DoubleWritable diffAvgTemp;
     private DoubleWritable humidity;
     private DoubleWritable diffHumid;
+    private DoubleWritable precipitation;
+    private DoubleWritable diffPrecipitation;
 
     public DoubleWritable getAirTemp() {
         return airTemp;
@@ -50,14 +52,21 @@ public class OutputClimateWritable implements Writable {
     }
 
     public OutputClimateWritable(){
+        this.maxTemp = new DoubleWritable();
+        this.diffMaxTemp = new DoubleWritable();
+        this.minTemp = new DoubleWritable();
+        this.diffMinTemp = new DoubleWritable();
         this.airTemp = new DoubleWritable();
         this.diffAvgTemp = new DoubleWritable();
         this.humidity = new DoubleWritable();
         this.diffHumid = new DoubleWritable();
+        this.precipitation = new DoubleWritable();
+        this.diffPrecipitation = new DoubleWritable();
     }
 
     public OutputClimateWritable(double minTemp, double diffMinTemp, double maxTemp, double diffMaxTemp,
-                                 double airTemp, double diffAvgTemp, double humidity, double diffHumid){
+                                 double airTemp, double diffAvgTemp, double humidity, double diffHumid,
+                                 double precipitation, double diffPrecipitation){
         this.maxTemp = new DoubleWritable(maxTemp);
         this.diffMaxTemp = new DoubleWritable(diffMaxTemp);
         this.minTemp = new DoubleWritable(minTemp);
@@ -66,6 +75,8 @@ public class OutputClimateWritable implements Writable {
         this.diffAvgTemp = new DoubleWritable(diffAvgTemp);
         this.humidity = new DoubleWritable(humidity);
         this.diffHumid = new DoubleWritable(diffHumid);
+        this.precipitation = new DoubleWritable(precipitation);
+        this.diffPrecipitation = new DoubleWritable(diffPrecipitation);
     }
 
     @Override
@@ -78,6 +89,8 @@ public class OutputClimateWritable implements Writable {
         diffAvgTemp.write(out);
         humidity.write(out);
         diffHumid.write(out);
+        precipitation.write(out);
+        diffPrecipitation.write(out);
     }
 
     @Override
@@ -90,6 +103,8 @@ public class OutputClimateWritable implements Writable {
         diffAvgTemp.readFields(in);
         humidity.readFields(in);
         diffHumid.readFields(in);
+        precipitation.readFields(in);
+        diffPrecipitation.readFields(in);
     }
 
     @Override
@@ -97,6 +112,7 @@ public class OutputClimateWritable implements Writable {
         return minTemp.toString() + "\t" + diffMinTemp.toString()  + "\t"
                 + maxTemp.toString() + "\t" + diffMaxTemp.toString() + "\t"
                 + airTemp.toString() + "\t" + diffAvgTemp.toString() + "\t"
-                + humidity.toString() + "\t" + diffHumid.toString();
+                + humidity.toString() + "\t" + diffHumid.toString() + "\t"
+                + precipitation.toString() + "\t" + diffPrecipitation.toString();
     }
 }

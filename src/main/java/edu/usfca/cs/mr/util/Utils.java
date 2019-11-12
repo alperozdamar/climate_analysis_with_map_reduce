@@ -101,4 +101,11 @@ public class Utils {
         return true;
     }
 
+    public static boolean isValidPrecipitation(double precipitation){
+        if (precipitation == NcdcConstants.EXTREME_PRECIPITATION_HIGH || precipitation == NcdcConstants.EXTREME_PRECIPITATION_LOW) {
+            return false;
+        }
+        return true;
+    }
+
 }
