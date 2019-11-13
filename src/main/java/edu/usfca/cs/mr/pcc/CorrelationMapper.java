@@ -24,17 +24,17 @@ public class CorrelationMapper extends Mapper<LongWritable, Text, Text, RunningS
         String wetFlag = values[NcdcConstants.WET_FLAG];
         double wind = Double.valueOf(values[NcdcConstants.WIND_1_5]);
         String windFlag = values[NcdcConstants.WIND_FLAG];
-        if(!humidFlag.equals(NcdcConstants.QC_FLAG_GOOD) || !wetFlag.equals(NcdcConstants.QC_FLAG_GOOD)
-            || !windFlag.equals(NcdcConstants.QC_FLAG_GOOD)){
+        double precipitation = Double.valueOf(values[NcdcConstants.PRECIPITATION]);
+        if (!humidFlag.equals(NcdcConstants.QC_FLAG_GOOD) || !wetFlag.equals(NcdcConstants.QC_FLAG_GOOD)
+                || !windFlag.equals(NcdcConstants.QC_FLAG_GOOD)) {
             return;
         }
-        if(Utils.isValidTemp(temperature) && Utils.isValidHumid(humidity) && Utils.isValidWetness(wetness)
-            && Utils.isValidWind(wind)){
+        if (Utils.isValidTemp(temperature) && Utils.isValidHumid(humidity) && Utils.isValidWetness(wetness)
+                && Utils.isValidWind(wind) && Utils.isValidPrecipitation(precipitation)) {
             String location = Geohash.encode(Float.valueOf(values[NcdcConstants.LATITUDE]),
                     Float.valueOf(values[NcdcConstants.LONGITUDE]),
                     Constants.GEO_HASH_PRECISION);
-//            context.write(new Text(location), new RunningStatisticsND(new double[]{lat, lon, temperature, humidity, wetness, wind}));
-            context.write(new Text(location), new RunningStatisticsND(new double[]{temperature, humidity, wetness}));
+            context.write(new Text("Correlation"), new RunningStatisticsND(new double[]{precipitation, temperature, humidity, wetness, wind}));
         }
     }
 }

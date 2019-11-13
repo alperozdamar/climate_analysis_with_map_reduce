@@ -22,7 +22,7 @@ public class MovingOutReducer extends
             double maxAirTemp = Double.NEGATIVE_INFINITY;
             double avgAirTemp = 0;
             int countAirTemp = 0;
-            double precipitation = 0;
+            double avgPrecipitation = 0;
             int countPrecipitation = 0;
             double avgHumidity = 0;
             int countAvgHumidity = 0;
@@ -43,20 +43,21 @@ public class MovingOutReducer extends
                     countAvgHumidity++;
                     avgHumidity += (value.getHumidity().get() - avgHumidity) / countAvgHumidity;
                 }
-                if (Utils.isValidPrecipitation(value.getPrecipitation().get())) {
+                if (Utils.isValidPrecipitation(value.getPrecipitation().get()) && value.getPrecipitation().get()!=0) {
                     countPrecipitation++;
-                    precipitation += value.getPrecipitation().get();
+                    avgPrecipitation += (value.getPrecipitation().get() - avgPrecipitation) / countPrecipitation;
                 }
             }
             int month = key.getMonth().get();
             avgAirTemp = countAirTemp == 0 ? NcdcConstants.EXTREME_TEMP_LOW
                     : Math.round(avgAirTemp * 100.0) / 100.0;
-            precipitation = countPrecipitation == 0 ? NcdcConstants.EXTREME_PRECIPITATION_LOW : Math.round(precipitation * 100.0) / 100.0;
+            avgPrecipitation = countPrecipitation == 0 ? NcdcConstants.PRECIPITATION_LOWEST
+                    : Math.round(avgPrecipitation * 100.0) / 100.0;
             avgHumidity = countAvgHumidity == 0 ? NcdcConstants.EXTREME_HUMIDITY_LOW
-                    : Math.round(avgHumidity * 100.0) / 100.0;
+                    : avgHumidity;
             if (avgAirTemp != NcdcConstants.EXTREME_TEMP_LOW
                     && avgHumidity != NcdcConstants.EXTREME_HUMIDITY_LOW
-                    && precipitation != NcdcConstants.EXTREME_PRECIPITATION_LOW) {
+                    && avgPrecipitation != NcdcConstants.EXTREME_PRECIPITATION_LOW) {
                 context.write(key,
                         new OutputClimateWritable(minAirTemp,
                                 Math.round(Math
@@ -78,11 +79,9 @@ public class MovingOutReducer extends
                                         .abs(MovingOutConfig.avgHumid[month]
                                                 - avgHumidity)
                                         * 100.0) / 100.0,
-                                precipitation,
-                                Math.round(Math
-                                        .abs(MovingOutConfig.precipitation[month]
-                                                - precipitation)
-                                        * 100.0) / 100.0));
+                                avgPrecipitation,
+                                Math.abs(MovingOutConfig.avgPrecipitation[month]
+                                        - avgPrecipitation)));
             }
         } catch (Exception e) {
             // TODO Auto-generated catch block

@@ -239,7 +239,7 @@ public class RunningStatisticsND implements Writable {
     @Override
     public String toString() {
         for(int i=0;i<this.ss.length;i++){
-            System.out.print(this.ss[i] + "  ");
+            System.out.print((Math.round(this.ss[i]*100.0)/100.0) + "  ");
         }
         return super.toString();
     }
