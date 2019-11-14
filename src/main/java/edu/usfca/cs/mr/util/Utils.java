@@ -108,4 +108,18 @@ public class Utils {
         return true;
     }
 
+    public static boolean isValidType(String type){
+        if(type.equals(NcdcConstants.SF_TYPE_CORRECT)){
+            return true;
+        }
+        return false;
+    }
+
+    public static boolean isValidFlag(String flag){
+        if(flag.equals(NcdcConstants.QC_FLAG_GOOD)){
+            return true;
+        }
+        return false;
+    }
+
 }

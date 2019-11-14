@@ -104,8 +104,6 @@ public class RunningStatisticsND implements Writable {
                     + samples.length + " =/= " + this.dimensions());
         }
 
-        n++;
-
         for (int i = 0; i < this.dimensions() - 1; ++i) {
             for (int j = i + 1; j < this.dimensions(); ++j) {
                 double dx = samples[i] - mean[i];
@@ -114,6 +112,8 @@ public class RunningStatisticsND implements Writable {
                 ss[index] += dx * dy * n / (n + 1);
             }
         }
+
+        n++;
 
         for (int d = 0; d < this.dimensions(); ++d) {
             double delta = samples[d] - mean[d];
@@ -236,12 +236,32 @@ public class RunningStatisticsND implements Writable {
         return this.max;
     }
 
-    @Override
-    public String toString() {
-        for(int i=0;i<this.ss.length;i++){
-            System.out.print((Math.round(this.ss[i]*100.0)/100.0) + "  ");
+    public double SS(int dimension) {
+        return this.var(dimension) * (this.count() - 1.0);
+    }
+
+    /**
+     * Calculate the coefficient of determination (r squared).
+     *
+     * @return coefficient of determination
+     */
+    public double r2(int dimension1, int dimension2) {
+        int index = this.index1D(dimension1, dimension2);
+        double SSE = (SS(dimension2) - ss[index] * ss[index] / SS(dimension1));
+        return (SS(dimension2) - SSE) / SS(dimension2);
+    }
+
+    /**
+     * Calculate the Pearson product-moment correlation coefficient.
+     *
+     * @return PPMCC (Pearson's r)
+     */
+    public double r(int dimension1, int dimension2) {
+        double r = Math.sqrt(r2(dimension1, dimension2));
+        if (r > 1.0) {
+            r = 1.0;
         }
-        return super.toString();
+        return r;
     }
 
     public static RunningStatisticsND read(DataInput in) throws IOException {
@@ -299,4 +319,32 @@ public class RunningStatisticsND implements Writable {
         }
     }
 
+//    @Override
+//    public String toString() {
+//        int length = this.min.length;
+//        StringBuilder sb = new StringBuilder();
+//        for(int i=0;i<length;i++){
+//            for(int j=0; j<i;j++){
+//                sb.append("NaN" + "\t");
+//            }
+//            for(int j=i + 1;j<length;j++){
+//                sb.append(r(i,j) + "\t");
+//            }
+//            sb.append("\n");
+//        }
+//        return sb.toString();
+//    }
+
+    @Override
+    public String toString() {
+        int length = this.min.length;
+        StringBuilder sb = new StringBuilder();
+        for(int i=0;i<length;i++){
+            for(int j=i + 1;j<length;j++) {
+                sb.append(CorrelationConfig.partialCorrelationType[i]+','+CorrelationConfig.partialCorrelationType[j]+" "+r(i,j)+"\n");
+                sb.append(CorrelationConfig.partialCorrelationType[j]+','+CorrelationConfig.partialCorrelationType[i]+" "+r(i,j)+"\n");
+            }
+        }
+        return sb.toString();
+    }
 }

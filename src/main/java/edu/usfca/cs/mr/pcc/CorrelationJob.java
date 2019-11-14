@@ -4,6 +4,7 @@ import edu.usfca.cs.mr.util.Utils;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.io.LongWritable;
+import org.apache.hadoop.io.NullWritable;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Job;
 import org.apache.hadoop.mapreduce.Mapper;
@@ -30,7 +31,7 @@ public class CorrelationJob {
             job.setMapperClass(CorrelationMapper.class);
 
             /* Outputs from the Mapper. */
-            job.setMapOutputKeyClass(Text.class);
+            job.setMapOutputKeyClass(NullWritable.class);
             job.setMapOutputValueClass(RunningStatisticsND.class);
 
             /* Combiner class. Combiners are run between the Map and Reduce
@@ -45,7 +46,7 @@ public class CorrelationJob {
             job.setReducerClass(CorrelationReducer.class);
 
             /* Outputs from the Reducer */
-            job.setOutputKeyClass(Text.class);
+            job.setOutputKeyClass(NullWritable.class);
             job.setOutputValueClass(RunningStatisticsND.class);
 
             /* Reduce tasks */
